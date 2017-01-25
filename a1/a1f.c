@@ -18,12 +18,13 @@ char ** getArray(int size)
 
 void extendArray(char *** array, int oldSize, int newSize)
 {
-	*array = realloc(*array,(sizeof(char *)*newSize));
+	*array = (char **)realloc(*array,(sizeof(char *)*newSize));
+	
 	int i =0;
 	for(i=oldSize;i<newSize;i++)
 	{
-		(*array)[i]=malloc(sizeof(char)*TOKEN);
-		sprintf((*array)[i],"%d",i);
+		((*array)[i])=malloc(sizeof(char)*TOKEN);
+		
 	}
 }
 void printTokens(char ** array,int size)
@@ -37,7 +38,7 @@ void printTokens(char ** array,int size)
 }
 int isEnd(char * str)
 {
-	if(str[strlen(str)-1]==";" || str[strlen(str)-1]==",")
+	if(str[strlen(str)-1]==';' || str[strlen(str)-1]==',')
 		return 1;
 	return 0;
 }
@@ -55,10 +56,51 @@ int isDataType(char * str)
 
 	return 0;
 }
+
+int delimiter(char  c)
+{
+	if(c==' ' || c=='\t'||  c=='\n' || c=='{' || c=='}'|| c=='(' || c==')'|| c==',' || c==';')
+		return 1;
+	
+	return 0;
+}
+
+int openParan(char * str)
+{
+	if(strcmp(str,"(")==0)
+		return 1;
+
+	return 0;
+}
+
+int closeParan(char * str)
+{
+	if(strcmp(str,")")==0)
+		return 1;
+
+	return 0;
+}
+
+int openBrace(char * str)
+{
+	if(strcmp(str,"{")==0)
+		return 1;
+
+	return 0;
+}
+
+int closeBrace(char * str)
+{
+	if(strcmp(str,"}")==0)
+		return 1;
+
+	return 0;
+}
+
 int isBlank(char * str)
 {
 
-	if(strcmp(str," ")==0)
+	if(strcmp(str," ")==0||strcmp(str,"\n")==0||strcmp(str,"\t")==0)
 		return 1;
 
 

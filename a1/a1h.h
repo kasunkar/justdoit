@@ -19,3 +19,9 @@ void printTokens(char ** array,int size);
 
 int classToStruct();
 
+int openBrace(char * str);
+
+int closeBrace(char * str);
+
+int delimiter(char  c);
+

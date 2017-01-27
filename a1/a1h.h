@@ -36,3 +36,5 @@ char ** reduceWhiteSpace(char *** array, int size, int * newSize);
 int countBlanks(char ** array, int size);
 
 int isWhiteChar(char c);
+
+void showWhiteSpace(char ** array,int size);

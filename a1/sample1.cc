@@ -4,6 +4,11 @@
 
 int a;
 
+
+
+
+
+
 class A {
 int a;
 int a(int b);

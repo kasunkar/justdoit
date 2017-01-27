@@ -27,14 +27,14 @@ int main(int argc, char* argv[])
 	
 	char ** array = getArray(initTokens);
 	int delimFlag=0;
-	
+	int charFlag =0;
 
 	while(c!=EOF)
 	{
-		printf("c is: %c\n",c);
+		//printf("c is: %c\n",c);
 		if(delimiter(c))
 		{
-			printf("its a delim\n");
+			//printf("its a delim\n");
 			if(delimFlag==0)/*char before delim*/
 			{
 
@@ -42,7 +42,8 @@ int main(int argc, char* argv[])
 				{
 					tokenCount++;
 					tokenIndex=0;
-				}
+				
+                }
 
 				if(tokenCount == initTokens)
 				{
@@ -53,7 +54,7 @@ int main(int argc, char* argv[])
 				array[tokenCount][tokenIndex]=c;
 				tokenIndex++;
 				array[tokenCount][tokenIndex]='\0';
-				printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
+				//printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
 
 				
 			}
@@ -62,15 +63,16 @@ int main(int argc, char* argv[])
 
 				array[tokenCount][tokenIndex]=c;
 				tokenIndex++;
-				printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
-				//array[tokenCount][tokenIndex]='\0';
+				//printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
+				array[tokenCount][tokenIndex]='\0';
 
 			}
 			delimFlag=1;
-
+            charFlag=0;
 
 		}else /*not deliimter*/
 		{
+            charFlag =1;
 			if(delimFlag==1)
 			{
 				array[tokenCount][tokenIndex]='\0';
@@ -81,7 +83,7 @@ int main(int argc, char* argv[])
 			array[tokenCount][tokenIndex]=c;
 			tokenIndex++;
 			array[tokenCount][tokenIndex]='\0';
-			printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
+			//printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
 			delimFlag=0;
 		}
 
@@ -92,16 +94,13 @@ int main(int argc, char* argv[])
 
 
 	}
-
-	printTokens(array,tokenCount);
+    tokenCount++;
+    showWhiteSpace(array,8);
 	
 
 
 
-	/*printTokens(array,tokenCount);
-
-
-	array i populated with tokens*/
+	/*	array i populated with tokens*/
 	/*int j=0;
 	while(i<tokenCount)
 	{

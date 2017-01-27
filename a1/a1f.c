@@ -33,8 +33,8 @@ void printTokens(char ** array,int size)
 
 	for ( i = 0; i < size; i++)
 	{
-		/*if(!isBlank(array[i]))*/
 			printf("%s", array[i]);
+		
 	}
 }
 int isEnd(char * str)
@@ -42,6 +42,28 @@ int isEnd(char * str)
 	if(str[strlen(str)-1]==';')
 		return 1;
 	return 0;
+}
+
+void showWhiteSpace(char ** array, int index)
+{
+	int i=0;
+	
+		for(i=0;i<strlen(array[index]);i++)
+		{
+			if(array[index][i]==' '){
+				printf("~BLANK_SPACE~");
+			}
+			else if (array[index][i]=='\n'){
+				printf("~NEW_LINE~");
+			}
+			else if (array[index][i]=='\t'){
+				printf("~TAB_ULAR~");
+			}
+			else
+			{
+				printf("%c", array[index][i]);
+			}
+		}
 }
 
 int isDataType(char * str)
@@ -68,7 +90,7 @@ int isWhiteChar(char c)
 
 int delimiter(char  c)
 {
-	if(c==' ' || c=='\t'||  c=='\n' || c=='{' || c=='}'|| c=='(' || c==')'|| c==',' || c==';'|| c==';')
+	if(c==' ' || c=='\t'||  c=='\n' || c=='{' || c=='}'|| c=='(' || c==')'|| c==',')
 		return 1;
 	
 	return 0;

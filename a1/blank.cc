@@ -3,3 +3,8 @@
 #include<string.h>
 
 int c;
+
+class A {
+	
+}
+

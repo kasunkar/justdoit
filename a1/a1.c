@@ -26,65 +26,106 @@ int main(int argc, char* argv[])
 	char c = fgetc(infile);
 	
 	char ** array = getArray(initTokens);
-	int delimFlag=0;
+	int whiteSpaceFlag=0;
 	int charFlag =0;
-
+    int delimFlag=0;
 	while(c!=EOF)
 	{
-		//printf("c is: %c\n",c);
+		printf("c is: %c\n",c);
 		if(delimiter(c))
 		{
+            delimFlag=1;
 			//printf("its a delim\n");
-			if(delimFlag==0)/*char before delim*/
+			if(isWhiteChar(c))/*char before delim*/
 			{
 
-				if(tokenCount!=0)/*file starts with white space*/
+				if(charFlag==1)/*file starts with white space*/
 				{
+                    charFlag=0;
 					tokenCount++;
+                    if(tokenCount == initTokens)
+                    {
+                        extendArray(&array,initTokens,tokenCount+initTokens);
+                        initTokens = tokenCount+initTokens;
+                    }
 					tokenIndex=0;
-				
+                    
                 }
 
-				if(tokenCount == initTokens)
-				{
-					extendArray(&array,initTokens,tokenCount+initTokens);
-					initTokens = tokenCount+initTokens;
-				}
-				
-				array[tokenCount][tokenIndex]=c;
-				tokenIndex++;
-				array[tokenCount][tokenIndex]='\0';
-				//printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
+                array[tokenCount][tokenIndex]=c;
+                tokenIndex++;
+                array[tokenCount][tokenIndex]='\0';
+            
+            }
+            else if (isQuotes(c))
+            {
+                tokenCount++;
+                if(tokenCount == initTokens)
+                {
+                    extendArray(&array,initTokens,tokenCount+initTokens);
+                    initTokens = tokenCount+initTokens;
+                }
+                tokenIndex=0;
+                array[tokenCount][tokenIndex]=c;
+                tokenIndex++;
+                int endQuote=0;
+                c=fgetc(infile);
+                while(endQuote!=1)
+                {
+                    printf("in while %c\n",c);
+                    array[tokenCount][tokenIndex]=c; 
+                    tokenIndex++;
+                    printf("at index %d\n",tokenIndex); 
 
-				
-			}
+                    if(isQuotes(c) && !isEscaped(array[tokenCount][tokenIndex-2]))
+                    {    
+                        endQuote=1;
+                        printf("endQuote set %d\n",endQuote);
+                    }
+                    c=fgetc(infile); 
+                }
+                
+                array[tokenCount][tokenIndex]='\0';
+
+            }/*other delimiters*/
 			else
 			{
-
+                tokenCount++;
+                if(tokenCount == initTokens)
+                {
+                    extendArray(&array,initTokens,tokenCount+initTokens);
+                    initTokens = tokenCount+initTokens;
+                }
+                tokenIndex=0;
 				array[tokenCount][tokenIndex]=c;
 				tokenIndex++;
-				//printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
 				array[tokenCount][tokenIndex]='\0';
 
 			}
-			delimFlag=1;
             charFlag=0;
 
-		}else /*not deliimter*/
+		}
+        else /*not deliimter*/
 		{
-            charFlag =1;
 			if(delimFlag==1)
 			{
 				array[tokenCount][tokenIndex]='\0';
 				tokenCount++;
+                if(tokenCount == initTokens)
+                {
+                    extendArray(&array,initTokens,tokenCount+initTokens);
+                    initTokens = tokenCount+initTokens;
+                }
 				tokenIndex=0;
 			}
 
 			array[tokenCount][tokenIndex]=c;
 			tokenIndex++;
 			array[tokenCount][tokenIndex]='\0';
-			//printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
-			delimFlag=0;
+
+            charFlag =1;
+            delimFlag=0;
+            whiteSpaceFlag=0;
 		}
 
 		
@@ -95,8 +136,36 @@ int main(int argc, char* argv[])
 
 	}
     tokenCount++;
-    showWhiteSpace(array,8);
+    printTokens(array,tokenCount);
+
+    char ** reducedArray = getArray(tokenCount);
+    int rCount=0;
+    int aIndex=0;
 	
+    /*while(rCount!=tokenCount)
+    {
+        if(isQuotes(array[aIndex]))
+        {
+            printf("IS QUOTES\n");
+            strcpy(reducedArray[rCount],array[aIndex]);
+            aIndex++;
+            while(!isQuotes(array[aIndex])&&!isEscaped(array[aIndex-1]))
+            {
+                strcat(reducedArray[rCount],array[aIndex]);
+                aIndex++;
+            }
+            strcat(reducedArray[rCount],array[aIndex]);
+        }
+        else
+        {
+            strcpy(reducedArray[rCount],array[aIndex]);
+        }
+        
+        rCount++;
+        aIndex++;
+    }*/
+
+    printTokens(reducedArray,rCount);
 
 
 

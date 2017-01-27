@@ -9,7 +9,7 @@ char ** getArray(int size)
 	int i=0;
 	for ( i = 0; i < size; i++)
 	{
-		array[i] = malloc(sizeof(char)*TOKEN);
+		array[i] = malloc(sizeof(char)*TOKEN_SIZE);
 		sprintf(array[i],"%d",i);
 	}
 
@@ -23,7 +23,7 @@ void extendArray(char *** array, int oldSize, int newSize)
 	int i =0;
 	for(i=oldSize;i<newSize;i++)
 	{
-		((*array)[i])=malloc(sizeof(char)*TOKEN);
+		((*array)[i])=malloc(sizeof(char)*TOKEN_SIZE);
 		
 	}
 }
@@ -33,7 +33,7 @@ void printTokens(char ** array,int size)
 
 	for ( i = 0; i < size; i++)
 	{
-			printf("%s", array[i]);
+			printf("%s\n", array[i]);
 		
 	}
 }
@@ -90,7 +90,7 @@ int isWhiteChar(char c)
 
 int delimiter(char  c)
 {
-	if(c==' ' || c=='\t'||  c=='\n' || c=='{' || c=='}'|| c=='(' || c==')'|| c==',')
+	if(c==' ' || c=='\t'||  c=='\n' || c=='{' || c=='}'|| c=='(' || c==')'|| c==','|| c=='\"')
 		return 1;
 	
 	return 0;
@@ -123,6 +123,23 @@ int openBrace(char * str)
 int closeBrace(char * str)
 {
 	if(strcmp(str,"}")==0)
+		return 1;
+
+	return 0;
+}
+
+
+int isQuotes(char c)
+{
+	if(c=='\"')
+		return 1;
+
+	return 0;
+}
+
+int isEscaped(char c)
+{
+	if(c=='\\')
 		return 1;
 
 	return 0;
@@ -214,3 +231,4 @@ int countBlanks(char ** array, int size)
 
 	return count;
 }
+

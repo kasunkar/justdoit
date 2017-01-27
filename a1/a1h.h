@@ -4,7 +4,7 @@ Kasun Karunagoda
 Assignment 1
 */
 
-#define TOKEN 64
+#define TOKEN_SIZE 64
 #define FXNPERCLASS 10
 #define MAX 256 
 
@@ -38,3 +38,7 @@ int countBlanks(char ** array, int size);
 int isWhiteChar(char c);
 
 void showWhiteSpace(char ** array,int size);
+
+int isQuotes(char c);
+
+int isEscaped(char c);

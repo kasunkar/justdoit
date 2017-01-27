@@ -6,6 +6,8 @@ Assignment 1
 
 #define TOKEN 64
 #define FXNPERCLASS 10
+#define MAX 256 
+
 
 char ** getArray(int size);
 
@@ -25,3 +27,12 @@ int closeBrace(char * str);
 
 int delimiter(char  c);
 
+
+int isRealClass(char **  array, int i);
+
+
+char ** reduceWhiteSpace(char *** array, int size, int * newSize);
+
+int countBlanks(char ** array, int size);
+
+int isWhiteChar(char c);

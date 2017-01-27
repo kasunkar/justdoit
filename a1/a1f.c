@@ -33,12 +33,13 @@ void printTokens(char ** array,int size)
 
 	for ( i = 0; i < size; i++)
 	{
-		printf("%s\n", array[i]);
+		/*if(!isBlank(array[i]))*/
+			printf("%s", array[i]);
 	}
 }
 int isEnd(char * str)
 {
-	if(str[strlen(str)-1]==';' || str[strlen(str)-1]==',')
+	if(str[strlen(str)-1]==';')
 		return 1;
 	return 0;
 }
@@ -57,9 +58,17 @@ int isDataType(char * str)
 	return 0;
 }
 
+int isWhiteChar(char c)
+{
+	if(c == ' ' || c=='\n' || c=='\t')
+		return 1;
+
+	return 0;
+}
+
 int delimiter(char  c)
 {
-	if(c==' ' || c=='\t'||  c=='\n' || c=='{' || c=='}'|| c=='(' || c==')'|| c==',' || c==';')
+	if(c==' ' || c=='\t'||  c=='\n' || c=='{' || c=='}'|| c=='(' || c==')'|| c==',' || c==';'|| c==';')
 		return 1;
 	
 	return 0;
@@ -99,17 +108,18 @@ int closeBrace(char * str)
 
 int isBlank(char * str)
 {
-
-	if(strcmp(str," ")==0||strcmp(str,"\n")==0||strcmp(str,"\t")==0)
-		return 1;
-
-
-	return 0;
+	int i=0;
+	for(i=0;i<strlen(str);i++)
+	{
+		if(str[i]!=' ' || str[i]!='\n' ||str[i]!='\t')
+			return 0;
+	}
+	return 1;
 }
 int isClass(char * str)
 {
 
-	if(strcmp(str,"class ")==0)
+	if(strcmp(str,"class")==0)
 		return 1;
 
 
@@ -119,4 +129,66 @@ int isClass(char * str)
 int printStruct(FILE * outfile, char * content)
 {
 	fprintf(outfile, "struct{\n%s\n};",content );
+}
+
+
+/*int isRealClass(char **  array, int i)
+{
+
+	if(array[])
+
+}*/
+
+char ** reduceWhiteSpace(char *** array, int size, int *newSize)
+{
+	char ** reducedArray = malloc(sizeof(*(*array)));
+	int i = 0;
+
+	for(i=0;i<size;i++)
+	{
+		reducedArray[i]=malloc(sizeof(char)*MAX);
+
+	} 
+
+	i=0;
+	int j=0;
+	char blanks[MAX];
+	while(i<size)
+	{
+
+		strcpy((*array)[i],reducedArray[j]);
+		j++;
+		i++;
+		/*if(!isBlank((*array)[i]))
+		{
+			strcpy((*array)[i],reducedArray[j]);
+			j++;
+		}else
+		{
+			while(isBlank((*array)[i]))
+			{
+				strcat(blanks,(*array)[i]);
+				i++;
+			}
+
+			strcpy(reducedArray[j],blanks);
+			j++;
+		}*/
+	}
+
+	*newSize = j;
+	return reducedArray;
+}
+
+int countBlanks(char ** array, int size)
+{
+	int i =0;
+	int count=0;
+	for (i = 0; i < size; i++)
+	{
+		if(isBlank(array[i]))
+			count++;
+	}
+
+	return count;
 }

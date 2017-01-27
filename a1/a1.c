@@ -3,21 +3,20 @@
 #include <string.h>
 #include "a1h.h"
 
-#define MAX 256 
 int main(int argc, char* argv[])
 {
 
 	char * classlist=malloc(sizeof(char)*MAX);
-	char * functionlist=malloc(sizeof(char)*MAX);
-	char * variablelist=malloc(sizeof(char)*MAX);
+	char * functionlist=malloc(sizeof(char)*MAX*MAX);
+	char * variablelist=malloc(sizeof(char)*MAX*10);
 
 
 	int initTokens = 100;
 	FILE * infile = fopen(argv[1],"r");
-	char outfileName[50];
+	/*char outfileName[50];
 	strcpy(outfileName,argv[1]);
 	outfileName[strlen(outfileName)-1]='\0';
-	FILE * outfile = fopen(outfileName,"w+");
+	FILE * outfile = fopen(outfileName,"w+");*/
 	int tokenCount =0;
 	int tokenIndex=0;
 	int i=0;
@@ -25,108 +24,112 @@ int main(int argc, char* argv[])
 	int functionIndex [FXNPERCLASS];
 	int functionCount=0;
 	char c = fgetc(infile);
-	char ** array = getArray(initTokens);
 	
+	char ** array = getArray(initTokens);
+	int delimFlag=0;
+	
+
 	while(c!=EOF)
 	{
-		
+		printf("c is: %c\n",c);
 		if(delimiter(c))
 		{
-			if(tokenIndex==0)
+			printf("its a delim\n");
+			if(delimFlag==0)/*char before delim*/
 			{
-				array[tokenCount][tokenIndex]=c;
-				array[tokenCount][tokenIndex+1]='\0';
-				tokenIndex=0;
-				tokenCount++;
-			}else
-			{
-				array[tokenCount][tokenIndex]='\0';
-				tokenIndex=0;
-				tokenCount++;
-				array[tokenCount][tokenIndex]=c;
-				array[tokenCount][tokenIndex+1]='\0';
-				tokenCount++;
 
+				if(tokenCount!=0)/*file starts with white space*/
+				{
+					tokenCount++;
+					tokenIndex=0;
+				}
+
+				if(tokenCount == initTokens)
+				{
+					extendArray(&array,initTokens,tokenCount+initTokens);
+					initTokens = tokenCount+initTokens;
+				}
+				
+				array[tokenCount][tokenIndex]=c;
+				tokenIndex++;
+				array[tokenCount][tokenIndex]='\0';
+				printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
+
+				
+			}
+			else
+			{
+
+				array[tokenCount][tokenIndex]=c;
+				tokenIndex++;
+				printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
+				//array[tokenCount][tokenIndex]='\0';
 
 			}
-		}else
+			delimFlag=1;
+
+
+		}else /*not deliimter*/
 		{
+			if(delimFlag==1)
+			{
+				array[tokenCount][tokenIndex]='\0';
+				tokenCount++;
+				tokenIndex=0;
+			}
+
 			array[tokenCount][tokenIndex]=c;
 			tokenIndex++;
+			array[tokenCount][tokenIndex]='\0';
+			printf("[%d]buidling token: %s\n", delimFlag,array[tokenCount]);
+			delimFlag=0;
 		}
-		if(tokenCount == initTokens){
-			
-			extendArray(&array,initTokens,tokenCount+initTokens);
-			initTokens = tokenCount+initTokens;
-		}
+
+		
+		
+
 		c=fgetc(infile);
 
+
 	}
-	
-	printf("%d\n",tokenCount);
+
 	printTokens(array,tokenCount);
 	
-	/*array i populated with tokens*/
 
+
+
+	/*printTokens(array,tokenCount);
+
+
+	array i populated with tokens*/
+	/*int j=0;
 	while(i<tokenCount)
 	{
 
-		if(isClass(array[i])) /*when class comes up*/
+		printf("%s",array[i]);
+		i++;
+
+		int realClass=0;
+		if(isClass(array[i]))
 		{
-
-			while(isBlank(array[i]))/* get rid of spaces, get to the name*/
-				i++;
-
-
-			strcpy(classlist,array[i]); /*store the class name in class list*/
-
-			while(!openBrace(array[i])) /*find opening brace for class*/
-				i++;
-			
-			innerBraces=1; /*{=+1, }=-1 terminate when inner brace =0*/ 
-			i++;
-
-			while(innerBraces!=0) /*within scope of class find functions and variables*/
+			if(i>0)
 			{
-
-				if(openBrace(array[i]))
-					innerBraces++;
-
-				if(closeBrace(array[i]))
-					innerBraces--;
-
-				/*find varibles and store in variable list*/
-
-				if(isDataType(array[i])) /*found a data type*/
-				{ 
-
-					
-					i++;
-					int j=i;
-					while(isBlank(array[i]))/*ignore all blanks*/
-						i++;
-
-					char unknown[MAX];
-					strcpy(unknown,array[i]);/*copy potential*/
-
-					while(isBlank(array[i]))
-						i++;
-
-				}
-
-				/*find functions and store in fxnlist*/
-
-				i++;
+				if(strcmp(array[i-1],"\n")==0)
+				{
+					realClass=1;
+					j++;
+				}	
 			}
-
 		}
 
-		i++;
+
 	}
+	*/	
+	//printf("%d many real classes\n", j);
 
-	
 
-	fclose(outfile);
+	printf("\n");
+	//fclose(outfile);
 	fclose(infile);
 	return 0;
 }

@@ -4,7 +4,6 @@
 
 int a;
 
-	/* different ways to access variables */
 class A {
 int a;
 int a(int b);

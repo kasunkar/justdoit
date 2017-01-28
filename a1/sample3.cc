@@ -101,68 +101,14 @@ E {
    {
    struct mystruct *ptr;
       int z = 3;
+      int kk;
       z++;
       printf("output should be 4 1.200000 : %d %f\n", z, abc);
 
       ptr = malloc(sizeof(struct mystruct));
       return(ptr);
    };
-   void string1(char str[]) {
-      printf("output should be abcd: %s\n", str);
-   }
-   void string2(char *str) {
-      printf("output should be efgh: %s\n", str);
-   }
+   
 };
 
-
-int main(int argc, char *argv[]) {
-class A myA;
-class B myB1,myB2, myB3;
-class C myC;
-int x, y;
-char str[50];
-struct mystruct *sptr;
-char *name;
-class E myE;
-
-   printf("Hello \" there\n");
-   strcpy(str, "A string containing the word class may be tricky");
-
-   sptr = malloc(sizeof(struct mystruct));
-
-   name = malloc(sizeof(char)*100);
-
-   myA.a = 5;
-   myA.aa = 10;
-   printf("output should be 15: ");
-   myA.add();
-
-   x = 4;
-   y = 5;
-   printf("output should be 9: ");
-   myA.add(x, y);
-
-   myB3.b = 10;
-   myB3.c = 11;
-   printf("output should be 10, 11: %ld %d", myB3.b, myB3.c);
-   myC.makeObject() ;
-
-	// comment with a keyword in it class A nota {
-   x = 11;
-   myD.seta(x);
-   printf("output should be 11: %d\n", myD.geta());
-
-   free(sptr);
-   sptr = myE.method();
-   strcpy(str, "abcd");
-   myE.string1(str);
-   strcpy(str, "efgh");
-   myE.string2(str);
-}
-
-
-float total(float a, float b){
-   return(a +b );
-}
 

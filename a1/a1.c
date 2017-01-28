@@ -6,13 +6,12 @@
 int main(int argc, char* argv[])
 {
 
-	char * classlist=malloc(sizeof(char)*MAX);
-	char * functionlist=malloc(sizeof(char)*MAX*MAX);
-	char * variablelist=malloc(sizeof(char)*MAX*10);
 
 
 	int initTokens = 100;
 	FILE * infile = fopen(argv[1],"r");
+    if(infile==NULL)
+        printf("no file\n");
 	/*char outfileName[50];
 	strcpy(outfileName,argv[1]);
 	outfileName[strlen(outfileName)-1]='\0';
@@ -21,7 +20,6 @@ int main(int argc, char* argv[])
 	int tokenIndex=0;
 	int i=0;
 	int innerBraces=-1;
-	int functionIndex [FXNPERCLASS];
 	int functionCount=0;
 	char c = fgetc(infile);
 	
@@ -31,7 +29,6 @@ int main(int argc, char* argv[])
     int delimFlag=0;
 	while(c!=EOF)
 	{
-		printf("c is: %c\n",c);
 		if(delimiter(c))
 		{
             delimFlag=1;
@@ -39,7 +36,7 @@ int main(int argc, char* argv[])
 			if(isWhiteChar(c))/*char before delim*/
 			{
 
-				if(charFlag==1)/*file starts with white space*/
+				if(charFlag==1 || delimFlag==1)/*file starts with white space*/
 				{
                     charFlag=0;
 					tokenCount++;
@@ -72,15 +69,12 @@ int main(int argc, char* argv[])
                 c=fgetc(infile);
                 while(endQuote!=1)
                 {
-                    printf("in while %c\n",c);
                     array[tokenCount][tokenIndex]=c; 
                     tokenIndex++;
-                    printf("at index %d\n",tokenIndex); 
 
                     if(isQuotes(c) && !isEscaped(array[tokenCount][tokenIndex-2]))
                     {    
                         endQuote=1;
-                        printf("endQuote set %d\n",endQuote);
                     }
                     c=fgetc(infile); 
                 }
@@ -100,6 +94,8 @@ int main(int argc, char* argv[])
 				array[tokenCount][tokenIndex]=c;
 				tokenIndex++;
 				array[tokenCount][tokenIndex]='\0';
+                delimFlag=1;
+                whiteSpaceFlag=0;
 
 			}
             charFlag=0;
@@ -136,68 +132,123 @@ int main(int argc, char* argv[])
 
 	}
     tokenCount++;
-    printTokens(array,tokenCount);
+    //printTokens(array,tokenCount);
 
-    char ** reducedArray = getArray(tokenCount);
-    int rCount=0;
-    int aIndex=0;
-	
-    /*while(rCount!=tokenCount)
+    
+    /* tokens properly loaded*/
+
+
+
+    char ** classlist= getList(tokenCount);
+    char ** functionlist=getList(tokenCount);
+    char ** variablelist=getList(tokenCount);
+    i = 0;
+    int classIndex=0;
+    while(i<tokenCount)
     {
-        if(isQuotes(array[aIndex]))
+        if(isClass(array[i]))
         {
-            printf("IS QUOTES\n");
-            strcpy(reducedArray[rCount],array[aIndex]);
-            aIndex++;
-            while(!isQuotes(array[aIndex])&&!isEscaped(array[aIndex-1]))
+            //printf("R: %d\n",openBrace(array[i+4]));
+
+            if(openBrace(array[i+4]) || openBrace(array[i+3]))
             {
-                strcat(reducedArray[rCount],array[aIndex]);
-                aIndex++;
+                strcpy(classlist[classIndex],array[i + 2]);
+                innerBraces=1;
+                i=i+5; 
             }
-            strcat(reducedArray[rCount],array[aIndex]);
+
+            while(innerBraces!=0)
+            {
+                if(openBrace(array[i]))
+                    innerBraces++;
+
+                if(closeBrace(array[i]))
+                    innerBraces--;
+
+                if(isDataType(array[i]))
+                {
+                    /*case for function*/
+                    /*look for opening paran*/
+                    if(openParan(array[i+4]) || openParan(array[i+3]))
+                    {
+                        //printf("%s%s%s%s%s is a function\n",array[i],array[i+1],array[i+2],array[i+3],array[i+4]);
+                        /*copy till open paran*/
+                        while(!closeParan(array[i]))
+                        {
+                            strcat(functionlist[classIndex],array[i]);
+                            i++;
+                        }
+                        strcat(functionlist[classIndex],array[i]);
+                        i++;
+                        /*at token after  ) */
+
+                        /*if prototype*/
+                        if(isEnd(array[i]) || isEnd(array[i+2]))
+                        {
+                            strcat(functionlist[classIndex],array[i]);
+                            strcat(functionlist[classIndex],"~");
+                        }else
+                        {
+                            while(!openBrace(array[i]))
+                            {
+                                strcat(functionlist[classIndex],array[i]);
+                                i++;
+                            }
+                            strcat(functionlist[classIndex],array[i]);
+                            i++;
+                            int functionBrace=1;
+                            while(functionBrace!=0)
+                            {
+                                if(openBrace(array[i]))
+                                    functionBrace++;
+
+                                if(closeBrace(array[i]))
+                                    functionBrace--;
+
+
+                                strcat(functionlist[classIndex],array[i]);
+                                i++;
+
+                            }
+                            strcat(functionlist[classIndex],"~");
+                            
+
+                        }
+
+
+
+                    }else/*copy variables till ;*/
+                    {
+                        printf("token is : %s\n",  array[i]);
+                        while(!isEnd(array[i]))
+                        {
+                            strcat(variablelist[classIndex],array[i]);
+                            i++;
+                        }
+
+                        strcat(variablelist[classIndex],array[i]);
+                        strcat(variablelist[classIndex],"~");
+                        printf("variablelist: %s\n", variablelist[classIndex]);
+                    
+                        //printf("%s%s%s is a variable\n",array[i],array[i+1],array[i+2]);
+                    }
+
+                }
+                i++;
+
+            }
+            classIndex++;
         }
-        else
-        {
-            strcpy(reducedArray[rCount],array[aIndex]);
-        }
-        
-        rCount++;
-        aIndex++;
+        i++;
+    }
+
+    i=0;
+    /*while(i<classIndex)
+    {
+        printf("classlist: %s\n",classlist[i] );
+	    i++;
     }*/
 
-    printTokens(reducedArray,rCount);
-
-
-
-	/*	array i populated with tokens*/
-	/*int j=0;
-	while(i<tokenCount)
-	{
-
-		printf("%s",array[i]);
-		i++;
-
-		int realClass=0;
-		if(isClass(array[i]))
-		{
-			if(i>0)
-			{
-				if(strcmp(array[i-1],"\n")==0)
-				{
-					realClass=1;
-					j++;
-				}	
-			}
-		}
-
-
-	}
-	*/	
-	//printf("%d many real classes\n", j);
-
-
-	printf("\n");
-	//fclose(outfile);
-	fclose(infile);
+    fclose(infile);
 	return 0;
 }

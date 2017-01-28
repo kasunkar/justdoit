@@ -5,11 +5,13 @@ Assignment 1
 */
 
 #define TOKEN_SIZE 64
-#define FXNPERCLASS 10
+#define FN_PER_CLASS 32
 #define MAX 256 
 
 
 char ** getArray(int size);
+
+char ** getList(int size);
 
 void extendArray(char *** array, int oldSize, int newSize);
 

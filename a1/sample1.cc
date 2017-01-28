@@ -4,12 +4,8 @@
 
 int a;
 
-
-
-
-
-
-class A {
+	/* different ways to access variables */
+class A{
 int a;
 int a(int b);
    void print1(int a) {
@@ -31,6 +27,7 @@ int a(int b);
 };
 
 class B {
+   double ar;
    void print4() {
 		// there is no class variable named a so print global variable
       printf("output should be 4: %d\n", a);

@@ -10,7 +10,20 @@ char ** getArray(int size)
 	for ( i = 0; i < size; i++)
 	{
 		array[i] = malloc(sizeof(char)*TOKEN_SIZE);
-		sprintf(array[i],"%d",i);
+		
+	}
+
+	return array;
+}
+
+char ** getList(int size)
+{
+	char ** array = malloc(sizeof(char*)*FN_PER_CLASS);
+	int i=0;
+	for ( i = 0; i < FN_PER_CLASS; i++)
+	{
+		array[i] = malloc(sizeof(char)*size);
+		
 	}
 
 	return array;
@@ -69,9 +82,9 @@ void showWhiteSpace(char ** array, int index)
 int isDataType(char * str)
 {
 	int i;
-	char * list[6] = {"int ","float ","char ","double ","short ","void "};
+	char * list[6] = {"int","float","char","double","short","void"};
 	
-	for(i=0;i<4;i++)
+	for(i=0;i<6;i++)
 	{
 		if(strcmp(list[i],str)==0)
 			return 1;

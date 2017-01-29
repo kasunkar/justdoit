@@ -12,15 +12,15 @@ int main(int argc, char* argv[])
 	FILE * infile = fopen(argv[1],"r");
     if(infile==NULL)
         printf("no file\n");
-	/*char outfileName[50];
+	char outfileName[50];
 	strcpy(outfileName,argv[1]);
 	outfileName[strlen(outfileName)-1]='\0';
-	FILE * outfile = fopen(outfileName,"w+");*/
+	FILE * outfile = fopen(outfileName,"w+");
 	int tokenCount =0;
 	int tokenIndex=0;
 	int i=0;
 	int innerBraces=-1;
-	int functionCount=0;
+    char endChar[]="~~";
 	char c = fgetc(infile);
 	
 	char ** array = getArray(initTokens);
@@ -75,11 +75,13 @@ int main(int argc, char* argv[])
                     if(isQuotes(c) && !isEscaped(array[tokenCount][tokenIndex-2]))
                     {    
                         endQuote=1;
+                    }else
+                    {
+                        c=fgetc(infile); 
                     }
-                    c=fgetc(infile); 
                 }
                 
-                array[tokenCount][tokenIndex]='\0';
+                array[tokenCount][tokenIndex+1]='\0';
 
             }/*other delimiters*/
 			else
@@ -149,10 +151,11 @@ int main(int argc, char* argv[])
         if(isClass(array[i]))
         {
             //printf("R: %d\n",openBrace(array[i+4]));
-
             if(openBrace(array[i+4]) || openBrace(array[i+3]))
             {
                 strcpy(classlist[classIndex],array[i + 2]);
+                strcpy(classlist[classIndex+1],";");
+                //printf("classlist: %s\n",classlist[classIndex]);
                 innerBraces=1;
                 i=i+5; 
             }
@@ -186,7 +189,7 @@ int main(int argc, char* argv[])
                         if(isEnd(array[i]) || isEnd(array[i+2]))
                         {
                             strcat(functionlist[classIndex],array[i]);
-                            strcat(functionlist[classIndex],"~");
+                            strcat(functionlist[classIndex],endChar);
                         }else
                         {
                             while(!openBrace(array[i]))
@@ -210,7 +213,7 @@ int main(int argc, char* argv[])
                                 i++;
 
                             }
-                            strcat(functionlist[classIndex],"~");
+                            strcat(functionlist[classIndex],"\n");
                             
 
                         }
@@ -219,16 +222,14 @@ int main(int argc, char* argv[])
 
                     }else/*copy variables till ;*/
                     {
-                        printf("token is : %s\n",  array[i]);
                         while(!isEnd(array[i]))
                         {
                             strcat(variablelist[classIndex],array[i]);
                             i++;
                         }
-
                         strcat(variablelist[classIndex],array[i]);
-                        strcat(variablelist[classIndex],"~");
-                        printf("variablelist: %s\n", variablelist[classIndex]);
+                        strcat(variablelist[classIndex],"\n\t");
+                       
                     
                         //printf("%s%s%s is a variable\n",array[i],array[i+1],array[i+2]);
                     }
@@ -241,14 +242,47 @@ int main(int argc, char* argv[])
         }
         i++;
     }
+    i=0;
+    while(!isEnd(classlist[i]))
+    {
+        printf("classlist: %s\n", classlist[i]);
+        printf("functionlist: %s\n", functionlist[i]);
+        printf("variablelist: %s\n\n\n\n\n", variablelist[i]);
+        i++;
+    
+    }
+
+    /*printing output*/
 
     i=0;
-    /*while(i<classIndex)
+    classIndex=0;
+    while(i<tokenCount)
     {
-        printf("classlist: %s\n",classlist[i] );
-	    i++;
-    }*/
+        if(isRealClass(array,i))
+        {
+            fprintf(outfile,"\nstruct %s {\n",classlist[classIndex]);
+            fprintf(outfile, "\t%s",variablelist[classIndex]);
+            fprintf(outfile, "%s","\n}");
 
+            fprintf(outfile, "\n%s", functionlist[classIndex]);
+
+
+
+
+            classIndex++;
+
+        }
+        else
+        {
+            /*fputs(array[i],outfile);*/
+        }
+        i++;
+
+
+    }
+
+
+    fclose(outfile);
     fclose(infile);
 	return 0;
 }

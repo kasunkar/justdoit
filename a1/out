@@ -97,6 +97,7 @@ function
 printf
 (
 "output should be 1: %d\n"
+,
  
 a
 )
@@ -169,6 +170,7 @@ variable
 printf
 (
 "output should be 2: %d\n"
+,
  
 a
 )
@@ -259,6 +261,7 @@ a
 printf
 (
 "output should be 3: %d\n"
+,
  
 a
 )
@@ -282,6 +285,14 @@ class
 B
  
 {
+
+
+ 
+ 
+ 
+double
+ 
+ar;
 
 
  
@@ -332,6 +343,7 @@ variable
 printf
 (
 "output should be 4: %d\n"
+,
  
 a
 )
@@ -454,6 +466,7 @@ str[100];
 printf
 (
 "Hello \" there\n"
+)
 ;
 
 
@@ -465,7 +478,8 @@ strcpy
 str
 ,
  
-"A string containing the word class may be tricky"
+"A string containing the word class may be tricky"ð
+)
 ;
 
 
@@ -539,22 +553,33 @@ myB.print4
 
 
 
-R: 0
-int a; is a variable
-int a is a function
-int b is a variable
-void print1 is a function
-int a is a variable
-void print2 is a function
-int a is a variable
-void print3 is a function
-R: 1
-void print4 is a function
-R: 0
-R: 0
-R: 0
 classlist: A
+functionlist: int a(int b);~void print1(int a) {
+		// print parameter - local to the function
+      printf("output should be 1: %d\n", a);
+   }~void print2() {
+		// create a local variable
+      int a = 2;
+		// print local variable
+      printf("output should be 2: %d\n", a);
+   }~void print3() {
+		// there is a class variable named a so
+		// assign value to it and print the class variable
+      a = 3;
+      printf("output should be 3: %d\n", a);
+   }~
+variablelist: int a;~
+
+
+
+
 classlist: B
-classlist: 
-classlist: 
-classlist: 
+functionlist: void print4() {
+		// there is no class variable named a so print global variable
+      printf("output should be 4: %d\n", a);
+   }~
+variablelist: double ar;~
+
+
+
+

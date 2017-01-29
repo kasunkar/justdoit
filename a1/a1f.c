@@ -184,64 +184,17 @@ int printStruct(FILE * outfile, char * content)
 }
 
 
-/*int isRealClass(char **  array, int i)
+int isRealClass(char **array, int index)
 {
-
-	if(array[])
-
-}*/
-
-char ** reduceWhiteSpace(char *** array, int size, int *newSize)
-{
-	char ** reducedArray = malloc(sizeof(*(*array)));
-	int i = 0;
-
-	for(i=0;i<size;i++)
+	if(isClass(array[index]))
 	{
-		reducedArray[i]=malloc(sizeof(char)*MAX);
-
-	} 
-
-	i=0;
-	int j=0;
-	char blanks[MAX];
-	while(i<size)
-	{
-
-		strcpy((*array)[i],reducedArray[j]);
-		j++;
-		i++;
-		/*if(!isBlank((*array)[i]))
-		{
-			strcpy((*array)[i],reducedArray[j]);
-			j++;
-		}else
-		{
-			while(isBlank((*array)[i]))
-			{
-				strcat(blanks,(*array)[i]);
-				i++;
-			}
-
-			strcpy(reducedArray[j],blanks);
-			j++;
-		}*/
+	    if(openBrace(array[index+4]) || openBrace(array[index+3]))
+	    {
+	    	
+	    	return 1;
+	    }
 	}
+	
+	return 0;
 
-	*newSize = j;
-	return reducedArray;
 }
-
-int countBlanks(char ** array, int size)
-{
-	int i =0;
-	int count=0;
-	for (i = 0; i < size; i++)
-	{
-		if(isBlank(array[i]))
-			count++;
-	}
-
-	return count;
-}
-

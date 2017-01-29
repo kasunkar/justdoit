@@ -30,12 +30,7 @@ int closeBrace(char * str);
 int delimiter(char  c);
 
 
-int isRealClass(char **  array, int i);
-
-
-char ** reduceWhiteSpace(char *** array, int size, int * newSize);
-
-int countBlanks(char ** array, int size);
+int isRealClass(char **  array, int index);
 
 int isWhiteChar(char c);
 

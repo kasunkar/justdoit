@@ -39,3 +39,5 @@ void showWhiteSpace(char ** array,int size);
 int isQuotes(char c);
 
 int isEscaped(char c);
+
+char * getFunctionPtr(FILE * fp,char * fnList, char * class);

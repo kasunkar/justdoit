@@ -194,7 +194,77 @@ int isRealClass(char **array, int index)
 	    	return 1;
 	    }
 	}
-	
 	return 0;
+}
 
+
+
+char * getFunctionPtr(FILE * fp,char * fnList, char* class)
+{
+	char * fnPtr = malloc(sizeof(char) *MAX);
+	int fnPtrIndex=0;
+	char token[MAX];
+	int tokenIndex=0;
+	
+	int i=0;
+	fnPtrIndex = strlen(fnPtr);
+	while(fnList[i]!=' ')
+	{
+		fnPtr[fnPtrIndex] = fnList[i];
+		fnPtrIndex++;
+		i++;
+		fnPtr[fnPtrIndex]='\0';
+
+	}
+	i++;
+	strcat(fnPtr," ");
+	strcat(fnPtr,class);
+	fnPtrIndex = strlen(fnPtr);
+	while(fnList[i]!='(')
+	{
+		fnPtr[fnPtrIndex]=fnList[i];
+		i++;
+		fnPtrIndex++;
+		fnPtr[fnPtrIndex]='\0';
+		
+	}
+	i++;
+	printf("outclose\n");
+	while(fnList[i]!=')')
+	{
+		
+
+		printf("in close char is:%c\n",fnList[i]);
+		if(fnList[i]==' ' || fnList[i]==',')
+		{
+			printf("in space data is: %s\n",token);
+			if(isDataType(token))
+			{
+				printf("is isDataType token is: %s\n",token);
+				fnPtr[fnPtrIndex]=token[0];
+				fnPtrIndex++;
+			    fnPtr[fnPtrIndex]='\0';
+				
+			}
+			memset(token,'\0',MAX);
+			tokenIndex=0;
+
+		}
+
+		if(fnList[i]==',' || fnList[i]==' ')
+		{
+			memset(token,'\0',MAX);
+			tokenIndex=0;
+		}else
+		{
+			token[tokenIndex]=fnList[i];
+		    tokenIndex++;
+	        token[tokenIndex]='\0';
+		}
+		
+
+		i++;	
+	}
+
+	return fnPtr;
 }

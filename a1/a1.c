@@ -263,7 +263,6 @@ int main(int argc, char* argv[])
             fprintf(outfile,"\nstruct %s {\n",classlist[classIndex]);
             fprintf(outfile, "\t%s",variablelist[classIndex]);
             fprintf(outfile, "%s","\n}");
-
             fprintf(outfile, "\n%s", functionlist[classIndex]);
 
 
@@ -281,7 +280,7 @@ int main(int argc, char* argv[])
 
     }
 
-
+    printf("%s\n",  getFunctionPtr(NULL,"int fn(  int a,int b)","A") );
     fclose(outfile);
     fclose(infile);
 	return 0;

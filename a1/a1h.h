@@ -41,3 +41,12 @@ int isQuotes(char c);
 int isEscaped(char c);
 
 char * getFunctionPtr(FILE * fp,char * fnList, char * class);
+
+void printFnPtrs(FILE * fp, char * fnList);
+
+
+int * fnLimits(char * fnList);
+
+
+int nextCloseParan(char * str);
+

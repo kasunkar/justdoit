@@ -5,11 +5,8 @@
 int a;
 
 	/* different ways to access variables */
-class A{
+class A {
 int a;
-
-printf("%d\n", a);
-int a(int b);
    void print1(int a) {
 		// print parameter - local to the function
       printf("output should be 1: %d\n", a);
@@ -29,8 +26,6 @@ int a(int b);
 };
 
 class B {
-   double ar;
-   float test;
    void print4() {
 		// there is no class variable named a so print global variable
       printf("output should be 4: %d\n", a);

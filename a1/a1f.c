@@ -229,18 +229,17 @@ char * getFunctionPtr(FILE * fp,char * fnList, char* class)
 		
 	}
 	i++;
-	printf("outclose\n");
 	while(fnList[i]!=')')
 	{
 		
 
-		printf("in close char is:%c\n",fnList[i]);
+		//printf("in close char is:%c\n",fnList[i]);
 		if(fnList[i]==' ' || fnList[i]==',')
 		{
-			printf("in space data is: %s\n",token);
+			//printf("in space data is: %s\n",token);
 			if(isDataType(token))
 			{
-				printf("is isDataType token is: %s\n",token);
+				//printf("is isDataType token is: %s\n",token);
 				fnPtr[fnPtrIndex]=token[0];
 				fnPtrIndex++;
 			    fnPtr[fnPtrIndex]='\0';
@@ -267,4 +266,102 @@ char * getFunctionPtr(FILE * fp,char * fnList, char* class)
 	}
 
 	return fnPtr;
+}
+
+
+void printFnPtrs(FILE * fp, char * fnList)
+{
+	char temp[MAX*FN_PER_CLASS];
+	strcpy(temp,fnList);
+	int i=0;
+	int j=0;
+
+	int * indexOfFns = fnLimits(fnList);
+	int indexOfParan[indexOfFns[0]+1];
+	int fnCount=indexOfFns[0];
+	indexOfParan[0]=fnCount;
+
+	while(fnList[i]!=')')
+	{
+		temp[j]=fnList[i];
+		i++;
+		j++;
+		temp[j]='\0';
+	}
+	temp[j]=fnList[i];
+	i++;
+	j++;
+	temp[j]='\0';
+	/*first fn pointer is in temp made*/
+	printf("fn%d: %s\n",0,temp);
+	
+	
+	if(fnCount==1)
+		return;
+
+
+	
+
+	for(i=1;i<fnCount;i++)
+	{
+		indexOfParan[i]=nextCloseParan(&fnList[indexOfFns[i]])+1;
+		indexOfParan[i]=indexOfParan[i]+indexOfFns[i];
+	}
+
+	for(i=0;i<fnCount;i++)
+	{
+		char fnTemp[MAX];
+		int tempIndex=0;
+		int j=0;
+		for(j=indexOfFns[i]+1;j<indexOfParan[i];j++)
+		{
+			fnTemp[tempIndex]=fnList[j];
+			tempIndex++;
+			fnTemp[tempIndex]='\0';
+		}
+		printf("fn%d: %s\n",i,fnTemp);
+
+	}
+	
+	
+}
+
+
+int * fnLimits(char * fnList){
+
+	int i =0;
+	int j=0;
+	int count = 0;
+
+	for(i=0;i<strlen(fnList);i++)
+	{
+		if(fnList[i]=='~')
+			count++;
+	}
+
+	int * indexes = malloc(sizeof(int)*count+1);
+	indexes[0]=count;
+	i=0;
+	count=1;
+	for(i=0;i<strlen(fnList);i++)
+	{
+		if(fnList[i]=='~')
+		{
+			indexes[count]=i;
+			count++;
+		}
+	}
+	return indexes;
+}
+
+int nextCloseParan(char * str)
+{
+	int i=0;
+	while(str[i]!=')')
+	{
+		i++;
+	}
+
+	printf("\n");
+	return i;
 }

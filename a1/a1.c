@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 	int tokenIndex=0;
 	int i=0;
 	int innerBraces=-1;
-    char endChar[]="~~";
+    char endChar[]="~";
 	char c = fgetc(infile);
 	
 	char ** array = getArray(initTokens);
@@ -213,7 +213,7 @@ int main(int argc, char* argv[])
                                 i++;
 
                             }
-                            strcat(functionlist[classIndex],"\n");
+                            strcat(functionlist[classIndex],endChar);
                             
 
                         }
@@ -243,14 +243,14 @@ int main(int argc, char* argv[])
         i++;
     }
     i=0;
-    while(!isEnd(classlist[i]))
+    /*while(!isEnd(classlist[i]))
     {
         printf("classlist: %s\n", classlist[i]);
         printf("functionlist: %s\n", functionlist[i]);
         printf("variablelist: %s\n\n\n\n\n", variablelist[i]);
         i++;
     
-    }
+    }*/
 
     /*printing output*/
 
@@ -262,6 +262,8 @@ int main(int argc, char* argv[])
         {
             fprintf(outfile,"\nstruct %s {\n",classlist[classIndex]);
             fprintf(outfile, "\t%s",variablelist[classIndex]);
+            printFnPtrs(outfile,functionlist[classIndex]);
+            //fprintf(outfile, "\t%s\n", );
             fprintf(outfile, "%s","\n}");
             fprintf(outfile, "\n%s", functionlist[classIndex]);
 
@@ -279,8 +281,14 @@ int main(int argc, char* argv[])
 
 
     }
+    i=0;
+    /*int * indices = fnLimits(functionlist[0]);
+    for(i=1;i<indices[0]+1;i++)
+        printf("%d\n",indices[i]);
 
-    printf("%s\n",  getFunctionPtr(NULL,"int fn(  int a,int b)","A") );
+    //printf("char is %c\n",functionlist[0][] );
+    /*printf("%s\n",  getFunctionPtr(NULL,"int fn()","A") );
+    */
     fclose(outfile);
     fclose(infile);
 	return 0;

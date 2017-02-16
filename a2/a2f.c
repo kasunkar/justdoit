@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "a2h.h"
+#include "stream.h"
 #include <string.h>
 #include <time.h>
 
@@ -74,6 +74,163 @@ void freeUserPost(struct userPost * post)
 	free(post->text);
 	free(post);
 
+}
+
+int addUser(char * username, char * list)
+{
+	char * file = malloc(sizeof(char)*INPUT);
+	int i =0;
+	int j=0;
+	while(list[i]!='\0')
+	{
+		if(list[i]==',')
+		{
+			strcat(file,"StreamUsers");
+			FILE * fp = fopen(file,"a");
+			if(fp == NULL)
+				fp = fopen(file,"w+");
+				
+			if(!userExists(file,username))
+			{	
+			
+				fputs(username,fp);
+				fputs(" 0\n",fp);
+			}
+			fclose(fp);
+			memset(file,'\0',INPUT);
+			j=0;
+			i++;
+
+		}
+		file[j]=list[i];
+		j++;
+		i++;
+	}
+
+	strcat(file,"StreamUsers");
+	FILE * fp = fopen(file,"a");
+	if(fp == NULL)
+		fp = fopen(file,"w+");
+
+	if(!userExists(file,username))
+	{			
+		fputs(username,fp);
+		fputs(" 0\n",fp);		
+	}
+	
+	free(file);
+	return 1;
+}
+
+int isNum(char str)
+{
+	if(str=='0' || str=='1' || str=='2'||str=='3' || str=='4'||str=='5' || str=='6'||str=='7' || str=='8' || str=='9')
+	{
+		return 1;
+	}
+	return 0;
+}
+
+int indexOfSpace(char * str)
+{
+	int i =0;
+	while(i<strlen(str))
+	{
+		if(str[i]==' ')
+		{
+			return i-1;
+		}
+		i++;
+	}
+	return 0;
+}
+int removeUser(char * username, char * list)
+{
+
+	int i=0;
+	int j=0;
+	char * file = malloc(sizeof(char)*INPUT);
+	char * outStr = malloc(sizeof(char)*LARGE_BUFFER);
+	
+	while(i<strlen(list))
+	{
+		if(list[i]==',' || i==strlen(list)-1)
+		{
+			if(i==strlen(list)-1)
+				file[j]=list[i];
+			
+			strcat(file,"StreamUsers");
+			
+			FILE * fp = fopen(file,"r");
+			
+			char * currentName = malloc(sizeof(char)*INPUT);
+				
+			while(fgets(currentName,INPUT,fp))
+			{
+				printf("%s\n", currentName);
+				if(strncmp(currentName,username,indexOfSpace(currentName))!=0)
+				{
+					strcat(outStr,currentName);
+				}	
+			}
+
+			free(currentName);
+			fclose(fp);
+			
+			fp = fopen(file,"w");
+			strcat(outStr,"\n");
+			fputs(outStr,fp);
+			memset(outStr,'\0',LARGE_BUFFER);
+			fclose(fp);
+			
+			memset(file,'\0',INPUT);
+			j=0;
+
+		}else if (list[i]!=' ')
+		{
+			file[j]=list[i];
+			j++;
+		}
+		i++;
+	}
+	free(outStr);
+	free(file);
+	return 1;
+}
+
+int userExists(char * file, char * username)
+{
+	char * currentName = malloc(sizeof(char)*INPUT);
+	FILE * fp = fopen(file,"r");
+	if(fp==NULL)
+		return -1;
+
+	char c = fgetc(fp);
+	int i=0;
+	while(c!=EOF)
+	{
+		if(c==' ' || c=='\n')
+		{
+			currentName[i]='\0';
+			if(strcmp(currentName,username)==0)
+			{
+				return 1;
+			}
+			i =0;
+			memset(currentName,'\0',INPUT);
+		}else
+		{
+			currentName[i]=c;
+			i++;
+		}
+		c=fgetc(fp);
+	}
+
+
+	free(currentName);
+	fclose(fp);
+
+	return 0;
 }
 
 void printPost(struct userPost * post)

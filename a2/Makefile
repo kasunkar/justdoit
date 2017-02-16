@@ -1,6 +1,7 @@
 all:
-	gcc -ansi -Wall -g a2.c -o post libstream.a 
-lib:
-	gcc -c a2f.c stream.h -o a2f.o
+
+	gcc -c a2f.c -o a2f.o
 	ar rcs libstream.a a2f.o
 	rm *.o
+	gcc -ansi -Wall -g addauthor.c -o addauthor libstream.a
+	gcc -ansi -Wall -g post.c -o post libstream.a

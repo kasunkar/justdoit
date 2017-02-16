@@ -1,0 +1,6 @@
+assumes users names dont start with numbers
+2calvert would not work
+
+in addAuthor only one name can be given
+./addAuthor -r kasun kar will NOT work
+./addAuthor -r kasun_kar will work

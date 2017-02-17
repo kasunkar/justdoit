@@ -30,9 +30,14 @@ int main(int argc, char const *argv[])
 	
 	struct userPost * post = formatEntry(author, streamname,datetime,text);
 
-	printPost(post);
-	
+	int ret = submitPost(post);
 
+	if(ret == 0)
+		printf("no stream \n");
+	if(ret==-1)
+		printf("not authorized\n");
+
+	freeUserPost(post);
 	free(buffer);
 	free(text);
 	free(streamname);

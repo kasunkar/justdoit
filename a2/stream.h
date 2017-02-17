@@ -11,10 +11,10 @@ struct userPost
 void readInput(char ** streamname,char ** text);
 struct userPost * formatEntry(char * username, char * streamname, char * date, char *  text);
 void getTimeDate(char ** DT);
-void submitPost(struct userPost * post);
+int submitPost(struct userPost * post);
 void freeUserPost(struct userPost * post);
 void printPost(struct userPost * post);
-
+int updateStream(struct userPost * post);
 int addUser(char * username, char * list);
 int removeUser(char * username, char * list);
 

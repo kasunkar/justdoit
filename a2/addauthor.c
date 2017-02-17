@@ -37,7 +37,7 @@ int main(int argc, char const *argv[])
 		addUser(author,list);
 	}
 	
-
+	free(list);
 	free(author);
 
 	return 0;

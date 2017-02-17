@@ -118,6 +118,7 @@ int addUser(char * username, char * list)
 		fputs(" 0\n",fp);		
 	}
 	
+	fclose(fp);
 	free(file);
 	return 1;
 }
@@ -162,30 +163,32 @@ int removeUser(char * username, char * list)
 			strcat(file,"StreamUsers");
 			
 			FILE * fp = fopen(file,"r");
-			
-			char * currentName = malloc(sizeof(char)*INPUT);
-				
-			while(fgets(currentName,INPUT,fp))
+			if(fp!=NULL)
 			{
-				printf("%s\n", currentName);
-				if(strncmp(currentName,username,indexOfSpace(currentName))!=0)
+				char * currentName = malloc(sizeof(char)*INPUT);
+					
+				while(fgets(currentName,INPUT,fp))
 				{
-					strcat(outStr,currentName);
-				}	
+					printf("%s\n", currentName);
+					if(strncmp(currentName,username,indexOfSpace(currentName))!=0)
+					{
+						strcat(outStr,currentName);
+					}	
+				}
+
+				free(currentName);
+				fclose(fp);
+				
+				fp = fopen(file,"w");
+				strcat(outStr,"\n");
+				fputs(outStr,fp);
+				fclose(fp);
+				memset(outStr,'\0',LARGE_BUFFER);
+				
+				
+				memset(file,'\0',INPUT);
+				j=0;
 			}
-
-			free(currentName);
-			fclose(fp);
-			
-			fp = fopen(file,"w");
-			strcat(outStr,"\n");
-			fputs(outStr,fp);
-			memset(outStr,'\0',LARGE_BUFFER);
-			fclose(fp);
-			
-			memset(file,'\0',INPUT);
-			j=0;
-
 		}else if (list[i]!=' ')
 		{
 			file[j]=list[i];
@@ -239,4 +242,70 @@ void printPost(struct userPost * post)
 	printf("Stream:%s\n",post->streamname);
 	printf("Date:%s\n",post->date);
 	printf("Text:%s\n",post->text);
+}
+
+int updateStream(struct userPost * post)
+{
+	
+	char * file = malloc(sizeof(char)*INPUT);
+	char * temp = malloc(sizeof(char)*LARGE_BUFFER);
+	strcpy(file,post->streamname);
+	strcat(file,"Stream");
+	FILE * fp = fopen(file,"a");
+	sprintf(temp, "Sender: %s\nDate: %s\n%s", post->username,post->date,post->text);
+	fprintf(fp, "Sender: %s\nDate: %s\n%s", post->username,post->date,post->text);
+	fclose(fp);
+	
+	strcat(file,"Data");
+	FILE * fp2 = fopen(file,"a+");
+
+	char * lastLine = malloc(sizeof(char)*INPUT);
+	char * numbers = malloc(sizeof(char)*INPUT);
+
+	fgets(numbers,INPUT,fp2);
+
+	printf("NUMBERS: %s RETS:%d\n", numbers,isNum(numbers[0]));
+
+	if(isNum(numbers[0]))
+	{
+		int lastNum=0;
+		sscanf(numbers,"%d",&lastNum);
+		//printf("not first entry lastNum: %d\n",lastNum );
+		int newNum = lastNum + strlen(temp);
+		fprintf(fp, "%d\n", newNum);
+
+	}else
+	{
+		int newNum =  strlen(temp)-2;
+		fprintf(fp, "%d\n", newNum);
+	}
+	free(temp);
+	free(numbers);
+	free(file);
+	fclose(fp2);
+}
+
+int submitPost(struct userPost * post)
+{
+	char * file = malloc(sizeof(char)*INPUT);
+	char * currentName = malloc(sizeof(char)*INPUT);
+	strcpy(file,post->streamname);
+	strcat(file,"StreamUsers");
+	int match=0;
+	FILE * fp = fopen(file,"r");
+	if(fp==NULL)
+		return 0;
+
+	if(userExists(file,post->username))
+	{
+		updateStream(post);
+	}else
+	{
+		return -1;
+	}
+
+	free(currentName);
+	free(file);
+	fclose(fp);
+	return 1;
 }

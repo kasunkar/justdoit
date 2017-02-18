@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import sys
+import sys,time
 import os
 
 def isAuthor (filename,username):
@@ -29,9 +29,22 @@ def getDataList(filename):
 	numbers=[]
 	line = fp.readline()
 	while line:
-		numbers.append(line)
-
+		numbers.append(line[:-1])
+		line = fp.readline()
+	fp.close();
 	return numbers
+
+def countNewLines(filename,pos):
+	fp = open(filename)
+	if(pos!=0):
+		
+	count=0;
+	line = fp.readline()
+	while line:
+		count=count+1
+		line = fp.readline()
+	fp.close();
+	return count
 
 
 user = str(sys.argv[1])
@@ -58,11 +71,26 @@ if ui == "all":
 		usersStreams[i] = usersStreams[i] + "StreamUsers"
 	sys.exit()
 
-
+streamFile = ui+"Stream"
 userFile = ui+"StreamUsers"
 dataFile = ui+"StreamData"
 
 print user+ " has read"
 lastRead  =  getLastRead(userFile,user)
 
-postLocations = getDataList
+postLocations = getDataList(dataFile)
+
+c = raw_input()
+while c!="q":
+	print(chr(27) + "[2J")
+	for i in range(24):
+		print " "
+	print "options: mcd		\r",
+
+	c = raw_input()
+
+print postLocations
+
+print countNewLines("uStream")
+
+

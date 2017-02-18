@@ -4,3 +4,7 @@ assumes users names dont start with numbers
 in addAuthor only one name can be given
 ./addAuthor -r kasun kar will NOT work
 ./addAuthor -r kasun_kar will work
+
+lines of texts are expected to be less than 80 characters long
+
+no single stream post is more than 23 lines in total

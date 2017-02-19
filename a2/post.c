@@ -36,7 +36,7 @@ int main(int argc, char const *argv[])
 		printf("no stream \n");
 	if(ret==-1)
 		printf("not authorized\n");
-
+	
 	freeUserPost(post);
 	free(buffer);
 	free(text);

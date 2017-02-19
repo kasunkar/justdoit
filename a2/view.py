@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import sys,time
 import os
 
@@ -36,15 +36,19 @@ def getDataList(filename):
 
 def countNewLines(filename,pos):
 	fp = open(filename)
-	if(pos!=0):
-		
-	count=0;
-	line = fp.readline()
+	fp.seek(pos)
+	count=0
+	line = fp.readline()		
 	while line:
 		count=count+1
 		line = fp.readline()
 	fp.close();
 	return count
+
+def getStreamStart(postNumber,postLocations):
+	if(postNumber==0):
+		return 0
+	return postLocations[postNumber-1]+1
 
 
 user = str(sys.argv[1])
@@ -57,12 +61,11 @@ for file in os.listdir("."):
 
 usersStreams.append("all")
 
-print ' '.join(usersStreams)
-
-ui = raw_input()
+print (', '.join(usersStreams))
+ui = input()
 
 if ui not in usersStreams:
-	print "not a valid option"
+	print ("not a valid option")
 	sys.exit()
 
 if ui == "all":
@@ -75,22 +78,23 @@ streamFile = ui+"Stream"
 userFile = ui+"StreamUsers"
 dataFile = ui+"StreamData"
 
-print user+ " has read"
 lastRead  =  getLastRead(userFile,user)
 
 postLocations = getDataList(dataFile)
-
-c = raw_input()
+c = 'x'
+print(chr(27) + "[2J")
 while c!="q":
-	print(chr(27) + "[2J")
-	for i in range(24):
-		print " "
-	print "options: mcd		\r",
+	newlines = (countNewLines(streamFile,0))
+	if(newlines<23):
+		fp = open(streamFile)
+		line = fp.readline()
+		while line:
+			print(line[:len(line)-1])
+			line = fp.readline()
+		fp.close
+	for i in range(23-newlines):
+		print (" ")
+	print ("Pg Dn    Pg Up    O-order toggle    M-Mark all    S-Stream    C-Check for new", end='')
 
-	c = raw_input()
-
-print postLocations
-
-print countNewLines("uStream")
-
+	c = input()
 

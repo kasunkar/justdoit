@@ -206,7 +206,11 @@ int userExists(char * file, char * username)
 	char * currentName = malloc(sizeof(char)*INPUT);
 	FILE * fp = fopen(file,"r");
 	if(fp==NULL)
+	{
+		free(currentName);
+		fclose(fp);	
 		return -1;
+	}
 
 	char c = fgetc(fp);
 	int i=0;
@@ -217,6 +221,8 @@ int userExists(char * file, char * username)
 			currentName[i]='\0';
 			if(strcmp(currentName,username)==0)
 			{
+				free(currentName);
+				fclose(fp);
 				return 1;
 			}
 			i =0;
@@ -232,7 +238,6 @@ int userExists(char * file, char * username)
 
 	free(currentName);
 	fclose(fp);
-
 	return 0;
 }
 
@@ -259,12 +264,9 @@ int updateStream(struct userPost * post)
 	strcat(file,"Data");
 	FILE * fp2 = fopen(file,"a+");
 
-	char * lastLine = malloc(sizeof(char)*INPUT);
 	char * numbers = malloc(sizeof(char)*INPUT);
 
-	fgets(numbers,INPUT,fp2);
-
-	printf("NUMBERS: %s RETS:%d\n", numbers,isNum(numbers[0]));
+	while(fgets(numbers,INPUT,fp2));
 
 	if(isNum(numbers[0]))
 	{
@@ -294,16 +296,23 @@ int submitPost(struct userPost * post)
 	int match=0;
 	FILE * fp = fopen(file,"r");
 	if(fp==NULL)
+	{
+		free(currentName);
+		free(file);
 		return 0;
+	}
 
 	if(userExists(file,post->username))
 	{
 		updateStream(post);
 	}else
 	{
+		free(currentName);
+		free(file);
+		fclose(fp);
 		return -1;
 	}
-
+	
 	free(currentName);
 	free(file);
 	fclose(fp);

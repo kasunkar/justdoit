@@ -1,8 +1,8 @@
 
 struct A {
 	int a;
-	
-}
-struct B {
-	
+	void (*Aprint1i)();
+	void (*Aprint2)();
+	void (*Aprint3)();
+
 }

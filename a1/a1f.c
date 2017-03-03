@@ -264,12 +264,45 @@ char * getFunctionPtr(FILE * fp,char * fnList, char* class)
 
 		i++;	
 	}
-
+	/*strcat(fnPtr,&fnList[nextOpenParan(fnList)]);
+	fnPtr[strlen(fnPtr)-1]='\0';
+	*/
 	return fnPtr;
 }
 
+char * addStars(char *fnPtr)
+{
+	char * withStar = malloc(sizeof(char)*MAX);
+	int i=0;
+	int j=0;
+	for(i=0;i<strlen(fnPtr);i++)
+	{
+		if(fnPtr[i]==' ')
+		{
+			withStar[j]=fnPtr[i];
+			j++;
+			withStar[j]='(';
+			j++;
+			withStar[j]='*';
+			j++;
 
-void printFnPtrs(FILE * fp, char * fnList)
+		}else
+		{
+			withStar[j]=fnPtr[i];
+			j++;
+		}	
+	}
+	withStar[j]=')';
+	withStar[j+1]='(';
+	withStar[j+2]=')';
+	withStar[j+3]=';';
+	withStar[j+4]='\0';
+	return withStar;
+}
+
+
+
+void printFnPtrs(FILE * fp, char * fnList, char * class)
 {
 	char temp[MAX*FN_PER_CLASS];
 	strcpy(temp,fnList);
@@ -293,7 +326,7 @@ void printFnPtrs(FILE * fp, char * fnList)
 	j++;
 	temp[j]='\0';
 	/*first fn pointer is in temp made*/
-	printf("fn%d: %s\n",0,temp);
+	fprintf(fp, "%s\n",addStars(getFunctionPtr(fp,temp,class)));
 	
 	
 	if(fnCount==1)
@@ -308,7 +341,7 @@ void printFnPtrs(FILE * fp, char * fnList)
 		indexOfParan[i]=indexOfParan[i]+indexOfFns[i];
 	}
 
-	for(i=0;i<fnCount;i++)
+	for(i=1;i<fnCount;i++)
 	{
 		char fnTemp[MAX];
 		int tempIndex=0;
@@ -319,11 +352,48 @@ void printFnPtrs(FILE * fp, char * fnList)
 			tempIndex++;
 			fnTemp[tempIndex]='\0';
 		}
-		printf("fn%d: %s\n",i,fnTemp);
+		fprintf(fp,"\t%s\n",addStars(getFunctionPtr(fp,fnTemp,class)));
 
 	}
 	
 	
+}
+
+void newFunctionList(FILE * fp, char * oldList,char * class)
+{
+	int i = 0;
+	char newFnName[MAX];
+	int index=0;
+	int start=0;
+	int end = nextSquigly(oldList);
+	int openParan = nextOpenParan(oldList);
+	int closeParan = nextCloseParan(oldList);
+	while(i<strlen(oldList))
+	{
+
+		newFnName[index] = oldList[i];
+		i++;
+		index++;
+		if(i==closeParan)
+		{
+			/*fprintf(fp, "\n\t%s",getFunctionPtr(fp,newFnName,class));
+			while(openParan<end)
+			{
+				fprintf(fp, "%c",oldList[openParan]);
+				openParan++;
+			}
+			i = end;
+			end = nextSquigly(&oldList[i+1]);
+			openParan = nextOpenParan(&oldList[i+1]);
+			closeParan = nextCloseParan(&oldList[i+1]);
+			index = 0;
+			memset(newFnName,'\0',MAX);
+			*/
+		} 
+
+		
+
+	}
 }
 
 
@@ -354,6 +424,16 @@ int * fnLimits(char * fnList){
 	return indexes;
 }
 
+int nextSquigly(char * str)
+{
+	int i=0;
+	while(str[i]!='~')
+	{
+		i++;
+	}
+	return i;
+}
+
 int nextCloseParan(char * str)
 {
 	int i=0;
@@ -362,6 +442,16 @@ int nextCloseParan(char * str)
 		i++;
 	}
 
-	printf("\n");
+	return i;
+}
+
+int nextOpenParan(char * str)
+{
+	int i=0;
+	while(str[i]!='(')
+	{
+		i++;
+	}
+
 	return i;
 }

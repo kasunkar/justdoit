@@ -42,7 +42,7 @@ int isEscaped(char c);
 
 char * getFunctionPtr(FILE * fp,char * fnList, char * class);
 
-void printFnPtrs(FILE * fp, char * fnList);
+void printFnPtrs(FILE * fp, char * fnList,char * class);
 
 
 int * fnLimits(char * fnList);
@@ -50,3 +50,11 @@ int * fnLimits(char * fnList);
 
 int nextCloseParan(char * str);
 
+int nextOpenParan(char * str);
+
+
+char * addStars(char *fnPrt);
+
+int nextSquigly(char * str);
+
+void newFunctionList(FILE * fp, char * oldList,char * class);

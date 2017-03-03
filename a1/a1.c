@@ -262,10 +262,9 @@ int main(int argc, char* argv[])
         {
             fprintf(outfile,"\nstruct %s {\n",classlist[classIndex]);
             fprintf(outfile, "\t%s",variablelist[classIndex]);
-            printFnPtrs(outfile,functionlist[classIndex]);
-            //fprintf(outfile, "\t%s\n", );
+            printFnPtrs(outfile,functionlist[classIndex],classlist[classIndex]);
             fprintf(outfile, "%s","\n}");
-            fprintf(outfile, "\n%s", functionlist[classIndex]);
+            newFunctionList(outfile,functionlist[classIndex],classlist[classIndex]);
 
 
 
@@ -285,10 +284,10 @@ int main(int argc, char* argv[])
     /*int * indices = fnLimits(functionlist[0]);
     for(i=1;i<indices[0]+1;i++)
         printf("%d\n",indices[i]);
-
-    //printf("char is %c\n",functionlist[0][] );
-    /*printf("%s\n",  getFunctionPtr(NULL,"int fn()","A") );
     */
+    //printf("char is %c\n",functionlist[0][] );
+    printf("%s\n",  addStars(getFunctionPtr(NULL,functionlist[1],"A")) );
+    
     fclose(outfile);
     fclose(infile);
 	return 0;

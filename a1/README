@@ -1,0 +1,31 @@
+README
+
+Kasun Karunagoda
+0830717
+CIS*2750 
+Assignment 1
+
+Compilation:
+
+Type make
+
+Known limitations:
+
+All functions are expected to have opening and closing braces
+
+	ex:  the former will work while the latter will not
+	int fn (){
+ 	    return 1;
+	}
+
+	int fn()
+ 	    return 1;
+
+
+All functions are assumed to have proper syntax and structure
+
+All classes start on a new line
+
+~ character does not exist in the document
+
+Ran out of time to test 

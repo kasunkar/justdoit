@@ -1,2 +1,2 @@
 all:
-	gcc a1.c a1f.c -o a1
+	gcc -g a1.c a1f.c -o a1

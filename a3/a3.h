@@ -8,4 +8,5 @@ char * getQuotedVal(char * str);
 int countDots(char * str);
 char * getSizePara(char * str);
 void printVal(char * str);
+char * getNextTag(char * line,int *start);
 

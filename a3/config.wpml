@@ -1,3 +1,5 @@
-.h(text="descritpion").t(text="text about the heading")
+.h(text="descritpion").t(text="text about the heading").d()
 this is just random shit just dump it into the file
 .b(name="btn1",link="facebook.com").h(size=5)
+.i(name="input 1").h(size=2).t("more text wtf")
+more stuff that doesnt matter

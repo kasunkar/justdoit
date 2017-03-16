@@ -78,6 +78,37 @@ char * getSizePara(char * str)
 	return size;
 }
 
+char * getNextTag(char * line,int *start)
+{
+	char * tag = malloc(sizeof(char)*S_BUF);
+	int i=*start+1;
+	int j=0;
+	int end=0;
+	while(end==0){		
+		
+		if(line[i]==')'){
+			tag[j]=line[i];
+			j++;
+			i++;
+			if(line[i]=='.'||line[i]=='\0'){
+				end =1;
+			}else{
+				i--;
+			}
+		}
+		if(end!=1)
+		{
+			tag[j]=line[i];
+			j++;
+			i++;
+		}
+	}
+	tag[j]='\0';
+
+	*start = i;
+	return tag;
+}
+
 char * getQuotedVal(char * str){
 	char * val = malloc(sizeof(char)*S_BUF);
 	int i = 0;

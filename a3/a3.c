@@ -18,30 +18,59 @@ int main(int argc, char const *argv[])
 	free(action);
 	/*.b  .d  .e  .h  .i  .l  .p  .r  .t*/
 
-	/*char * line = malloc(sizeof(char)*L_BUF);
+	char * line = malloc(sizeof(char)*L_BUF);
 	int i=0;
 	FILE * fp = fopen("config.wpml","r");
 	char c = fgetc(fp);
-	
-	while(c!=EOF)
+	int end=0;
+	while(end==0)
 	{
-		if(c=='\n')
+
+		if(c=='\n' || c==EOF)
 		{
+			if(c==EOF)
+				end=1;
+			c=fgetc(fp);
+
 			line[i]='\0';
-			printf("%d\n", countDots(line));
+			char * tag;
+			if(line[0]=='.'){
+				int start = 0;
+				int numTags = countDots(line);
+				int k=0;
+				for(k=0;k<numTags;k++){
+					tag = getNextTag(line,&start);
+					printf("%s\n",tag );
+					free(tag);
+				}
+				/*int iLine =1;
+				int iTag =0;
+				while(iLine<strlen(line)){
+					if(line[i])
+					tag[iTag]=line[iLine];
+					iTag++;
+					iLine++;
+				}
+				
+				printf("%s\n",line);*/
+			}else{
+
+			}
 			memset(line,'\0',L_BUF);
 			i=0;
 		}
+
 		line[i]=c;
 		i++;
 		c = fgetc(fp);
 
 	}
+
 	printf("%d\n", countDots(line));
-	
+	free(line);
 	char footer [] = "</body>\n</html>\n";
 	fputs(footer,html);
 	fclose(html);
-	fclose(fp);*/
+	fclose(fp);
 	return 0;
 }

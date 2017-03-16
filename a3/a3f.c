@@ -78,6 +78,44 @@ char * getSizePara(char * str)
 	return size;
 }
 
+void writeToPage(FILE * fp, char * tag)
+{
+	char * html = malloc(sizeof(char)*L_BUF);
+	if(tag[0]=='b'){
+
+	}
+	else if(tag[0]=='d'){
+	
+	}
+	else if(tag[0]=='e'){
+
+	}
+	else if(tag[0]=='h'){
+
+	}
+	else if(tag[0]=='i'){
+
+	}
+	else if(tag[0]=='l'){
+
+	}
+	else if(tag[0]=='p'){
+
+	}
+	else if(tag[0]=='r'){
+
+	}
+	else if(tag[0]=='t'){
+
+	}
+
+	free(html);
+}
+void closeTags(FILE * fp, char * tag, int count)
+{
+
+}
+
 char * getNextTag(char * line,int *start)
 {
 	char * tag = malloc(sizeof(char)*S_BUF);
@@ -117,6 +155,15 @@ char * getQuotedVal(char * str){
 	
 	while(i<strlen(str)){
 		
+		if(str[i]=='\\')
+		{
+			i++;
+			val[j]=str[i];
+			j++;
+			val[j]='\0';
+			i++;
+		}
+
 		if(str[i]=='\"')
 		{
 			i++;

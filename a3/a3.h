@@ -9,4 +9,5 @@ int countDots(char * str);
 char * getSizePara(char * str);
 void printVal(char * str);
 char * getNextTag(char * line,int *start);
-
+void writeToPage(FILE * fp, char * tag);
+void closeTags(FILE * fp, char * tag, int count);

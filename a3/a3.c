@@ -6,7 +6,7 @@
 
 int main(int argc, char const *argv[])
 {
-	char header [] = "!DOCTYPE html\n<html>\n<body>\n";
+	char header [] = "<!DOCTYPE html>\n<html>\n<body>\n";
 	FILE * html = fopen("a3.html","w");
 	fputs(header,html);
 	char * test = malloc(sizeof(char)*S_BUF);
@@ -37,24 +37,20 @@ int main(int argc, char const *argv[])
 			if(line[0]=='.'){
 				int start = 0;
 				int numTags = countDots(line);
+				char * tagStack= malloc(sizeof(char)*numTags+1);
 				int k=0;
 				for(k=0;k<numTags;k++){
 					tag = getNextTag(line,&start);
-					printf("%s\n",tag );
+					tagStack[k]=tag[0];
+					tagStack[k+1]='\0';
+					writeToPage(html,tag);
+					/*tag is some tag that starts with a .*/
+
 					free(tag);
 				}
-				/*int iLine =1;
-				int iTag =0;
-				while(iLine<strlen(line)){
-					if(line[i])
-					tag[iTag]=line[iLine];
-					iTag++;
-					iLine++;
-				}
 				
-				printf("%s\n",line);*/
 			}else{
-
+				/*printf("%s\n",line );*/
 			}
 			memset(line,'\0',L_BUF);
 			i=0;
@@ -66,7 +62,6 @@ int main(int argc, char const *argv[])
 
 	}
 
-	printf("%d\n", countDots(line));
 	free(line);
 	char footer [] = "</body>\n</html>\n";
 	fputs(footer,html);

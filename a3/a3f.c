@@ -9,17 +9,21 @@ char *  getParaVal(char * str, char * paraName){
 	char * buffer = malloc(sizeof(char)*S_BUF);
 	memset(buffer,'\0',S_BUF);
 	int j=0;
-	int i =0;
-
-
+	int i =2;
+/*
+	printf("%s\t\t%s\n", str,paraName);
+*/
 	while(i<strlen(str)){
 		
-		if(str[i]==','|| i==strlen(str)-1){
-			
-			if(i==strlen(str)-1)
+		if(str[i]==','|| i==strlen(str)-1)
+		{
+			if(i==strlen(str)-1){
 				buffer[j]=str[i];
+			}
 			if(strncmp(paraName,buffer,indexOf(buffer,'=')+1)==0)
 			{
+				/*printf("matched tag: %s\n",buffer );
+				*/
 				if(strcmp(paraName,"size=")==0)
 				{
 					paraVal=getSizePara(buffer);
@@ -27,7 +31,10 @@ char *  getParaVal(char * str, char * paraName){
 					return paraVal;
 				}else{
 					paraVal =  getQuotedVal(buffer);
+					
 					free(buffer);
+				/*	printf("FINAL: %s\n",paraVal);
+				*/	
 					return paraVal;
 				}
 			}
@@ -82,22 +89,80 @@ void writeToPage(FILE * fp, char * tag)
 {
 	char * html = malloc(sizeof(char)*L_BUF);
 	if(tag[0]=='b'){
+		char * name = getParaVal(tag,"name=");
+		char *link = getParaVal(tag,"link=");
+		char * final = malloc(sizeof(char)*L_BUF);
 
+		sprintf(final,"<form action=\"%s\">\n\t <input type=\"submit\" value=\"%s\"/>\n</form>\n",link,name);
+
+		fputs(final,fp);
+		free(name);
+		free(link);
+		free(final);
 	}
 	else if(tag[0]=='d'){
-	
-	}
+		fputs("<hr>\n",fp);
+	}	
 	else if(tag[0]=='e'){
 
 	}
 	else if(tag[0]=='h'){
+		char * size = getParaVal(tag,"size=");
+		if(size==NULL)
+		{
+			size = malloc(sizeof(char)*S_BUF);
+			memset(size,'\0',S_BUF);
+			strcpy(size,"3");
+		}
+
+		char * text = getParaVal(tag,"text=");
+		if(text==NULL)
+		{
+			text = malloc(sizeof(char)*S_BUF);
+			memset(text,'\0',S_BUF);
+			strcpy(text,"HEADING");
+		}
+
+		char * final = malloc(sizeof(char)*L_BUF);
+
+
+		sprintf(final,"<h%s>%s",size,text);
+		fputs(final,fp);
+		free(text);
+		free(size);
+		free(final);
 
 	}
 	else if(tag[0]=='i'){
+		char * action=getParaVal(tag,"action=");
+		if(action==NULL)
+		{
+			action = malloc(sizeof(char)*S_BUF);
+			memset(action,'\0',S_BUF);
+		}
+		char * text=getParaVal(tag,"text=");
+		char * name=getParaVal(tag,"name=");
+		char * value=getParaVal(tag,"value=");
+
+		<form action="/action_page.php">
+	  	First name: <input type="text" name="fname"><br>
+	  	Last name: <input type="text" name="lname"><br>
+	  	<input type="submit" value="Submit">
+		</form>
 
 	}
 	else if(tag[0]=='l'){
 
+		char * final = malloc(sizeof(char)*L_BUF);
+		char * link = getParaVal(tag,"link=");
+		char * text = getParaVal(tag,"text=");
+
+
+		sprintf(final,"<a href=\"%s\">%s</a>",link,text);
+		fputs(final,fp);
+		free(link);
+		free(text);
+		free(final);
 	}
 	else if(tag[0]=='p'){
 
@@ -106,14 +171,59 @@ void writeToPage(FILE * fp, char * tag)
 
 	}
 	else if(tag[0]=='t'){
+		char * text = getParaVal(tag,"text=");
+		if(text==NULL)
+		{
+			text = malloc(sizeof(char)*S_BUF);
+			memset(text,'\0',S_BUF);
+			strcpy(text,"Default text");
+		}
+
+		char * file = getParaVal(tag,"file=");
+		
+		char * final = malloc(sizeof(char)*L_BUF);
+
+		if(file==NULL)
+		{
+			sprintf(final,"<textarea>%s</textarea>",text);
+			fputs(final,fp);
+		}else
+		{
+			sprintf(final,"<textarea>%s</textarea>",file);
+			fputs(final,fp);
+			
+			
+		}
+
+
+		free(text);
+		free(file);
+		free(final);
 
 	}
 
 	free(html);
 }
-void closeTags(FILE * fp, char * tag, int count)
+void closeTags(FILE * fp, char * tagStack, int count)
 {
+	int i=count;
+	for (i = count; i > -1; i--)
+	{
 
+		else if(tagStack[i]=='h'){
+			fputs("<\\h3>\n",fp);
+		}
+		else if(tagStack[i]=='p'){
+
+		}
+		else if(tagStack[i]=='r'){
+
+		}
+		else if(tagStack[i]=='t'){
+
+		}
+	}
+		
 }
 
 char * getNextTag(char * line,int *start)

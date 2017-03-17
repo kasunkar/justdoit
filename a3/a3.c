@@ -10,13 +10,13 @@ int main(int argc, char const *argv[])
 	FILE * html = fopen("a3.html","w");
 	fputs(header,html);
 	char * test = malloc(sizeof(char)*S_BUF);
-	strcpy(test,"action=\"action.php\"");
-	char * action = getParaVal(test,"action=");
+	strcpy(test,".b(name=\"btn12\",link=\"facebook.com\"");
+	/*char * action = getParaVal(test,"name=");
 	
-	printVal(action);
+	printVal(action);*/
 	free(test);
-	free(action);
-	/*.b  .d  .e  .h  .i  .l  .p  .r  .t*/
+	/*free(action);
+	.b  .d  .e  .h  .i  .l  .p  .r  .t*/
 
 	char * line = malloc(sizeof(char)*L_BUF);
 	int i=0;
@@ -44,13 +44,17 @@ int main(int argc, char const *argv[])
 					tagStack[k]=tag[0];
 					tagStack[k+1]='\0';
 					writeToPage(html,tag);
-					/*tag is some tag that starts with a .*/
-
+					fputs("<br>\n",html);
+					/*tag is some tag that starts with a .
+*/					
 					free(tag);
 				}
-				
+				closeTags(html,tagStack,k);
+				printf("\n");
+				free(tagStack);
 			}else{
-				/*printf("%s\n",line );*/
+				fputs(line,html);
+				fputs("\n",html);
 			}
 			memset(line,'\0',L_BUF);
 			i=0;

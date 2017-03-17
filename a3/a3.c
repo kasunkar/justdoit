@@ -28,33 +28,38 @@ int main(int argc, char const *argv[])
 
 		if(c=='\n' || c==EOF)
 		{
-			if(c==EOF)
+			if(c==EOF){
 				end=1;
-			c=fgetc(fp);
-
+			}else{
+				c=fgetc(fp);
+			}
 			line[i]='\0';
 			char * tag;
 			if(line[0]=='.'){
 				int start = 0;
 				int numTags = countDots(line);
 				char * tagStack= malloc(sizeof(char)*numTags+1);
+				memset(tagStack,'\0',numTags+1);
 				int k=0;
 				for(k=0;k<numTags;k++){
 					tag = getNextTag(line,&start);
 					tagStack[k]=tag[0];
 					tagStack[k+1]='\0';
 					writeToPage(html,tag);
-					fputs("<br>\n",html);
+					fputs("\n<br>\n",html);
 					/*tag is some tag that starts with a .
 */					
 					free(tag);
 				}
 				closeTags(html,tagStack,k);
-				printf("\n");
+				
 				free(tagStack);
 			}else{
-				fputs(line,html);
-				fputs("\n",html);
+				if(line[0]!=EOF)
+				{
+					fputs(line,html);
+					fputs("\n",html);
+				}
 			}
 			memset(line,'\0',L_BUF);
 			i=0;
@@ -65,10 +70,9 @@ int main(int argc, char const *argv[])
 		c = fgetc(fp);
 
 	}
-
+	strcpy(line,"\n</body>\n</html>\n");
+	fputs(line,html);
 	free(line);
-	char footer [] = "</body>\n</html>\n";
-	fputs(footer,html);
 	fclose(html);
 	fclose(fp);
 	return 0;

@@ -139,16 +139,29 @@ void writeToPage(FILE * fp, char * tag)
 		{
 			action = malloc(sizeof(char)*S_BUF);
 			memset(action,'\0',S_BUF);
+			strcpy(action,"phone.php");
 		}
 		char * text=getParaVal(tag,"text=");
+		if(text==NULL)
+		{
+			text = malloc(sizeof(char)*S_BUF);
+			memset(text,'\0',S_BUF);
+			strcpy(text,"Phone Number");
+		}
 		char * name=getParaVal(tag,"name=");
-		char * value=getParaVal(tag,"value=");
+		if(name==NULL)
+		{
+			name = malloc(sizeof(char)*S_BUF);
+			memset(name,'\0',S_BUF);
+			strcpy(name,"number");
+		}
+		/*char * value=getParaVal(tag,"value=");
 
 		<form action="/action_page.php">
 	  	First name: <input type="text" name="fname"><br>
 	  	Last name: <input type="text" name="lname"><br>
 	  	<input type="submit" value="Submit">
-		</form>
+		</form>)*/
 
 	}
 	else if(tag[0]=='l'){
@@ -165,10 +178,80 @@ void writeToPage(FILE * fp, char * tag)
 		free(final);
 	}
 	else if(tag[0]=='p'){
+		char * image= getParaVal(tag,"image=");
+		char * size =  getParaVal(tag,"size=");
+
+		char * final = malloc(sizeof(char)*L_BUF);
+		int height=0;
+		int width=0;
+		if(size==NULL)
+		{
+			height = 100;
+			width=100;
+		}else
+		{
+			sscanf(size, "%dx%d", &width, &height);
+		}
+		
+		sprintf(final,"<img src=\"%s\" height=\"%d\" width=\"%d\">",image,height,width);
+		
+		fputs(final,fp);
+		free(image);
+		free(size);
+		free(final);
 
 	}
 	else if(tag[0]=='r'){
+		char * action = getParaVal(tag,"action=");
+		char * name = getParaVal(tag,"name=");
+		char * final = malloc(sizeof(char)*L_BUF);
+		memset(final,'\0',L_BUF);
+		char * buffer = malloc(sizeof(char)*L_BUF);
+		memset(buffer,'\0',L_BUF);
+		char * values = getMultipleValues(tag);
+		char * currentVal = malloc(sizeof(char)*S_BUF);
+		memset(currentVal,'\0',S_BUF);
+		int valueCount = countDots(values);
+		int valI=0;
+		int curI=0;
+		sprintf(buffer,"<form action=\"%s\">",action);
+		strcat(final,buffer);
+		memset(buffer,'\0',L_BUF);
+		char checked[10];
+		strcpy(checked," ");
+		int i=0;
+		for (i = 0; i < valueCount; ++i)
+		{
+			while(values[valI]!='.')
+			{
+				currentVal[curI]=values[valI];
+				curI++;
+				valI++;
+			}
 
+			if(i==0){
+				strcpy(checked,"checked");
+			}else
+			{
+				strcpy(checked," ");
+			}
+
+			curI=0;
+			valI++;
+			sprintf(buffer,"\n\t<input type=\"radio\" name=\"%s\" value=\"%s\" %s> %s<br>",action,name,checked,currentVal);
+			strcat(final,buffer);
+			memset(buffer,'\0',L_BUF);	
+			memset(currentVal,'\0',S_BUF);	
+		}
+		strcat(final,"\n</form>");
+
+		fputs(final,fp);
+		free(currentVal);
+		free(values);
+		free(buffer);
+		free(action);
+		free(name);
+		free(final);
 	}
 	else if(tag[0]=='t'){
 		char * text = getParaVal(tag,"text=");
@@ -190,11 +273,8 @@ void writeToPage(FILE * fp, char * tag)
 		}else
 		{
 			sprintf(final,"<textarea>%s</textarea>",file);
-			fputs(final,fp);
-			
-			
+			fputs(final,fp);	
 		}
-
 
 		free(text);
 		free(file);
@@ -204,17 +284,40 @@ void writeToPage(FILE * fp, char * tag)
 
 	free(html);
 }
+
+char * getMultipleValues(char * str)
+{
+	int i=0;
+	char * buffer = malloc(sizeof(char)*S_BUF);
+	memset(buffer,'\0',S_BUF);
+
+
+	while(i<strlen(str))
+	{
+
+		if(strncmp("value=",&str[i],6)==0)
+		{
+			strcat(buffer,getQuotedVal(&str[i]));
+			strcat(buffer,".");
+		}
+
+		i++;
+	}
+
+
+	return buffer;
+}
 void closeTags(FILE * fp, char * tagStack, int count)
 {
 	int i=count;
-	for (i = count; i > -1; i--)
+	for (i = count; i >=0; i--)
 	{
 
-		else if(tagStack[i]=='h'){
-			fputs("<\\h3>\n",fp);
+		if(tagStack[i]=='h'){
+			fputs("</h3>\n",fp);
 		}
 		else if(tagStack[i]=='p'){
-
+			
 		}
 		else if(tagStack[i]=='r'){
 

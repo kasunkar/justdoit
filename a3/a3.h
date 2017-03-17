@@ -11,3 +11,4 @@ void printVal(char * str);
 char * getNextTag(char * line,int *start);
 void writeToPage(FILE * fp, char * tag);
 void closeTags(FILE * fp, char * tag, int count);
+char *  getMultipleValues(char * str);

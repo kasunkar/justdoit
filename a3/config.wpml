@@ -5,4 +5,5 @@ more stuff that doesnt matter
 .h(text="link heading").l(link="https://www.google.com",text="google")
 
 
-.h(size=1,text="heres calvert").p(image="calvert.jpeg").r(action="radio.php",name="colour",value="red",value="green",value="blue")
+.h(size=1,text="heres calvert").p(image="calvert.jpeg",size=300x300)
+.r(action="radio.php",name="colour",value="red")

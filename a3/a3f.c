@@ -238,7 +238,7 @@ void writeToPage(FILE * fp, char * tag)
 
 			curI=0;
 			valI++;
-			sprintf(buffer,"\n\t<input type=\"radio\" name=\"%s\" value=\"%s\" %s> %s<br>",action,name,checked,currentVal);
+			sprintf(buffer,"\n\t<input type=\"radio\" name=\"%s\" value=\"%s\" %s> %s<br>",name,currentVal,checked,currentVal);
 			strcat(final,buffer);
 			memset(buffer,'\0',L_BUF);	
 			memset(currentVal,'\0',S_BUF);	

@@ -63,12 +63,13 @@ int main(int argc, char const *argv[])
 			}
 			memset(line,'\0',L_BUF);
 			i=0;
+
+		}else
+		{
+			line[i]=c;
+			i++;
+			c = fgetc(fp);
 		}
-
-		line[i]=c;
-		i++;
-		c = fgetc(fp);
-
 	}
 	strcpy(line,"\n</body>\n</html>\n");
 	fputs(line,html);

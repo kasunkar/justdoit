@@ -1,9 +1,11 @@
-.h(text="descritpion").t(text="text about the heading")
 this is just random shit just dump it into the file
-.b(link="https://www.facebook.com",name="btn1").h(size=5).t("heading button text")
+.h(size=1,text="heres calvert").p(image="calvert.jpeg",size=300x300)
+
+.h(size=4,text="some 4th heading").t(file="README.txt")
+.e(exe="ls")
+.b(link="https://www.facebook.com",name="btn1").h(size=5)
 more stuff that doesnt matter
 .h(text="link heading").l(link="https://www.google.com",text="google")
-
-
-.h(size=1,text="heres calvert").p(image="calvert.jpeg",size=300x300)
 .r(action="radio.php",name="colour",value="red")
+.i(action="action.php",text="myopinion",name="opinion",value="wtf is shit shit")
+.h(size=4,text="some 4th heading").t(file="README.txt")

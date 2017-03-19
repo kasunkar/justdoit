@@ -7,4 +7,4 @@ known limitations:
 
 if file is used as an input to a tag the max file size if 1mb.
 
-
+unknown behavior if exe file in .e tag does not exist

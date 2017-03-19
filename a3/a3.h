@@ -1,5 +1,6 @@
 #define S_BUF 128
 #define L_BUF 1024
+#define FILE_BUF 1000000
 
 int indexOf(char * str, char c);
 char *  getParaVal(char * str, char * paraName);

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <dirent.h> 
 #include "a3.h"
 
 char *  getParaVal(char * str, char * paraName){
@@ -105,6 +106,67 @@ void writeToPage(FILE * fp, char * tag)
 	}	
 	else if(tag[0]=='e'){
 
+		char * exe = getParaVal(tag,"exe=");
+		char * cmd = malloc(sizeof(char)*S_BUF);
+		
+		int found =0;
+		DIR           *d;
+  		struct dirent *dir;
+  		d = opendir(".");
+  		if (d)
+  		{
+    		while ((dir = readdir(d)) != NULL)
+		    {
+		     	if(strcmp(exe,dir->d_name)==0){
+		     		strcpy(cmd,"./");
+					strcat(cmd,exe);
+		     		system(cmd);
+		     		found =1;
+		     	}
+		    }
+
+    		closedir(d);
+  		}
+
+  		if(found==0)
+  		{
+  			d = opendir("./bin");
+	  		if (d)
+	  		{
+	    		while ((dir = readdir(d)) != NULL)
+			    {
+			     	if(strcmp(exe,dir->d_name)==0){
+			     		strcpy(cmd,"./bin/");
+						strcat(cmd,exe);
+			     		system(cmd);
+			     		found =1;
+			     	}
+			    }
+
+    			closedir(d);
+  			}
+  		}
+
+  		if(found==0)
+  		{
+  			d = opendir("/bin");
+	  		if (d)
+	  		{
+	    		while ((dir = readdir(d)) != NULL)
+			    {
+			     	if(strcmp(exe,dir->d_name)==0){
+
+			     		system(exe);
+			     		found =1;
+			     	}
+			    }
+
+    			closedir(d);
+  			}
+  		}
+
+		free(cmd);
+		free(exe);
 	}
 	else if(tag[0]=='h'){
 		char * size = getParaVal(tag,"size=");
@@ -135,33 +197,20 @@ void writeToPage(FILE * fp, char * tag)
 	}
 	else if(tag[0]=='i'){
 		char * action=getParaVal(tag,"action=");
-		if(action==NULL)
-		{
-			action = malloc(sizeof(char)*S_BUF);
-			memset(action,'\0',S_BUF);
-			strcpy(action,"phone.php");
-		}
 		char * text=getParaVal(tag,"text=");
-		if(text==NULL)
-		{
-			text = malloc(sizeof(char)*S_BUF);
-			memset(text,'\0',S_BUF);
-			strcpy(text,"Phone Number");
-		}
 		char * name=getParaVal(tag,"name=");
-		if(name==NULL)
-		{
-			name = malloc(sizeof(char)*S_BUF);
-			memset(name,'\0',S_BUF);
-			strcpy(name,"number");
-		}
-		/*char * value=getParaVal(tag,"value=");
+		char * value = getParaVal(tag,"value=");
+		char * final = malloc(sizeof(char)*L_BUF);
 
-		<form action="/action_page.php">
-	  	First name: <input type="text" name="fname"><br>
-	  	Last name: <input type="text" name="lname"><br>
-	  	<input type="submit" value="Submit">
-		</form>)*/
+		
+		sprintf(final,"<form action=\"%s\">\n%s: <input type=\"text\" name=\"%s\" value=\"%s\"><br>\n<input type=\"submit\" value=\"Submit\">\n</form>",action,text,name,value);
+
+		fputs(final,fp);
+		free(action);
+		free(text);
+		free(name);
+		free(value);
+		free(final);
 
 	}
 	else if(tag[0]=='l'){
@@ -205,11 +254,11 @@ void writeToPage(FILE * fp, char * tag)
 		char * action = getParaVal(tag,"action=");
 		char * name = getParaVal(tag,"name=");
 		char * final = malloc(sizeof(char)*L_BUF);
-		memset(final,'\0',L_BUF);
 		char * buffer = malloc(sizeof(char)*L_BUF);
-		memset(buffer,'\0',L_BUF);
-		char * values = getMultipleValues(tag);
 		char * currentVal = malloc(sizeof(char)*S_BUF);
+		char * values = getMultipleValues(tag);
+		memset(final,'\0',L_BUF);
+		memset(buffer,'\0',L_BUF);
 		memset(currentVal,'\0',S_BUF);
 		int valueCount = countDots(values);
 		int valI=0;
@@ -244,7 +293,7 @@ void writeToPage(FILE * fp, char * tag)
 			memset(currentVal,'\0',S_BUF);	
 		}
 		strcat(final,"\n</form>");
-
+		
 		fputs(final,fp);
 		free(currentVal);
 		free(values);
@@ -264,7 +313,7 @@ void writeToPage(FILE * fp, char * tag)
 
 		char * file = getParaVal(tag,"file=");
 		
-		char * final = malloc(sizeof(char)*L_BUF);
+		char * final = malloc(sizeof(char)*FILE_BUF);
 
 		if(file==NULL)
 		{
@@ -272,8 +321,21 @@ void writeToPage(FILE * fp, char * tag)
 			fputs(final,fp);
 		}else
 		{
-			sprintf(final,"<textarea>%s</textarea>",file);
-			fputs(final,fp);	
+			FILE * fpTemp = fopen(file,"r");
+			char * fileBuf = malloc(sizeof(char)*FILE_BUF);
+			char c = fgetc(fpTemp);
+			int i=0;
+			while(c!=EOF)
+			{
+				fileBuf[i]=c;
+				i++;
+				fileBuf[i]='\0';
+				c = fgetc(fpTemp);
+			}
+			sprintf(final,"<textarea>%s</textarea>",fileBuf);
+			fputs(final,fp);
+			fclose(fpTemp);
+			free(fileBuf);	
 		}
 
 		free(text);
@@ -297,7 +359,9 @@ char * getMultipleValues(char * str)
 
 		if(strncmp("value=",&str[i],6)==0)
 		{
-			strcat(buffer,getQuotedVal(&str[i]));
+			char * quoted = getQuotedVal(&str[i]);
+			strcat(buffer,quoted);
+			free(quoted);
 			strcat(buffer,".");
 		}
 
